@@ -11,11 +11,11 @@ namespace Wang
     public class SortPartyConfig
     {
 
-        public static SortType SortOrder
+        public static TroopSortType SortOrder
         {
             get;
             set;
-        } = SortType.MountRangeTierDesc;
+        } = TroopSortType.MountRangeTierDesc;
 
 
         public static void init(XmlDocument xmlDocument)
@@ -25,31 +25,31 @@ namespace Wang
             switch (xmlNode.SelectSingleNode("sortOrder").InnerText.Trim())
             {
                 case "TierDesc":
-                    SortOrder = SortType.TierDesc;
+                    SortOrder = TroopSortType.TierDesc;
                     break;
                 case "TierAsc":
-                    SortOrder = SortType.TierAsc;
+                    SortOrder = TroopSortType.TierAsc;
                     break;
                 case "TierDescType":
-                    SortOrder = SortType.TierDescType;
+                    SortOrder = TroopSortType.TierDescType;
                     break;
                 case "TierAscType":
-                    SortOrder = SortType.TierAscType;
+                    SortOrder = TroopSortType.TierAscType;
                     break;
                 case "MountRangeTierDesc":
-                    SortOrder = SortType.MountRangeTierDesc;
+                    SortOrder = TroopSortType.MountRangeTierDesc;
                     break;
                 case "MountRangeTierAsc":
-                    SortOrder = SortType.MountRangeTierAsc;
+                    SortOrder = TroopSortType.MountRangeTierAsc;
                     break;
                 case "CultureTierDesc":
-                    SortOrder = SortType.CultureTierDesc;
+                    SortOrder = TroopSortType.CultureTierDesc;
                     break;
                 case "CultureTierAsc":
-                    SortOrder = SortType.CultureTierAsc;
+                    SortOrder = TroopSortType.CultureTierAsc;
                     break;
                 default:
-                    SortOrder = SortType.None;
+                    SortOrder = TroopSortType.None;
                     break;
 
             }

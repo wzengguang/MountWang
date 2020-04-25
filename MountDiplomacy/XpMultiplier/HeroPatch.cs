@@ -13,9 +13,9 @@ namespace Wang
 {
 
     [HarmonyPatch(typeof(Hero), "AddSkillXp")]
-    public class XpMultiplierPatch
+    public class HeroPatch
     {
-        private static void Prefix(Hero __instance, SkillObject skill, float xpAmount)
+        public static void Prefix(Hero __instance, SkillObject skill, float xpAmount)
         {
 
             if (__instance.HeroDeveloper != null)

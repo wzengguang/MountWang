@@ -50,7 +50,7 @@ namespace Wang
 
         public static void SortUnits(TroopRoster input)
         {
-            if (SortPartyConfig.SortOrder == SortType.None)
+            if (SortPartyConfig.SortOrder == TroopSortType.None)
             {
                 return;
             }
@@ -74,35 +74,35 @@ namespace Wang
                                                               select x;
             switch (SortPartyConfig.SortOrder)
             {
-                case SortType.TierDesc:
+                case TroopSortType.TierDesc:
                     return (from x in source
                             orderby x.Troop.Tier descending, x.Troop.Name.ToString()
                             select x).ToList();
-                case SortType.TierAsc:
+                case TroopSortType.TierAsc:
                     return (from x in source
                             orderby x.Troop.Tier, x.Troop.Name.ToString()
                             select x).ToList();
-                case SortType.TierDescType:
+                case TroopSortType.TierDescType:
                     return (from x in source
                             orderby x.Troop.Tier descending, IsMountedUnit(x.Troop), IsRangedUnit(x.Troop), x.Troop.Name.ToString()
                             select x).ToList();
-                case SortType.TierAscType:
+                case TroopSortType.TierAscType:
                     return (from x in source
                             orderby x.Troop.Tier, IsMountedUnit(x.Troop), IsRangedUnit(x.Troop), x.Troop.Name.ToString()
                             select x).ToList();
-                case SortType.MountRangeTierDesc:
+                case TroopSortType.MountRangeTierDesc:
                     return (from x in source
                             orderby IsMountedUnit(x.Troop) descending, IsRangedUnit(x.Troop), x.Troop.Tier descending, x.Troop.Name.ToString()
                             select x).ToList();
-                case SortType.MountRangeTierAsc:
+                case TroopSortType.MountRangeTierAsc:
                     return (from x in source
                             orderby IsMountedUnit(x.Troop) descending, IsRangedUnit(x.Troop), x.Troop.Tier, x.Troop.Name.ToString()
                             select x).ToList();
-                case SortType.CultureTierDesc:
+                case TroopSortType.CultureTierDesc:
                     return (from x in source
                             orderby x.Troop.Culture.Name.ToString(), x.Troop.Tier descending, x.Troop.Name.ToString()
                             select x).ToList();
-                case SortType.CultureTierAsc:
+                case TroopSortType.CultureTierAsc:
                     return (from x in source
                             orderby x.Troop.Culture.Name.ToString(), x.Troop.Tier, x.Troop.Name.ToString()
                             select x).ToList();
@@ -127,49 +127,49 @@ namespace Wang
             {
                 switch (SortPartyConfig.SortOrder)
                 {
-                    case SortType.TierDesc:
+                    case TroopSortType.TierDesc:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby x.Character.Tier descending, x.Character.Name.ToString()
                                 select x).ToList();
                         break;
-                    case SortType.TierAsc:
+                    case TroopSortType.TierAsc:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby x.Character.Tier, x.Character.Name.ToString()
                                 select x).ToList();
                         break;
-                    case SortType.TierDescType:
+                    case TroopSortType.TierDescType:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby x.Character.Tier descending, IsMountedUnit(x.Character), IsRangedUnit(x.Character), x.Character.Name.ToString()
                                 select x).ToList();
                         break;
-                    case SortType.TierAscType:
+                    case TroopSortType.TierAscType:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby x.Character.Tier, IsMountedUnit(x.Character), IsRangedUnit(x.Character), x.Character.Name.ToString()
                                 select x).ToList();
                         break;
-                    case SortType.MountRangeTierDesc:
+                    case TroopSortType.MountRangeTierDesc:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby IsMountedUnit(x.Character) descending, IsRangedUnit(x.Character), x.Character.Tier descending, x.Character.Name.ToString()
                                 select x).ToList();
                         break;
-                    case SortType.MountRangeTierAsc:
+                    case TroopSortType.MountRangeTierAsc:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby IsMountedUnit(x.Character) descending, IsRangedUnit(x.Character), x.Character.Tier, x.Character.Name.ToString()
                                 select x).ToList();
                         break;
-                    case SortType.CultureTierDesc:
+                    case TroopSortType.CultureTierDesc:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby x.Character.Culture.Name.ToString(), x.Character.Tier descending, x.Character.Name.ToString()
                                 select x).ToList();
                         break;
-                    case SortType.CultureTierAsc:
+                    case TroopSortType.CultureTierAsc:
                         list = (from x in input
                                 where !x.IsHero
                                 orderby x.Character.Culture.Name.ToString(), x.Character.Tier, x.Character.Name.ToString()

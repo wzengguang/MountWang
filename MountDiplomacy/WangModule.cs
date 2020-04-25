@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EnhanceLordTroop;
+using HarmonyLib;
 using SandBox.GauntletUI;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using Wang.GauntletUI;
 
 namespace Wang
 {
@@ -56,6 +58,7 @@ namespace Wang
 
         }
 
+
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             base.OnGameStart(game, gameStarterObject);
@@ -65,13 +68,15 @@ namespace Wang
                 ReplaceGameModel(campaignGameStarter);
                 AddBehaviour(gameStarterObject as CampaignGameStarter);
             }
+            Help.Original = null;
         }
 
         private void AddBehaviour(CampaignGameStarter gameStarterObject)
         {
-            gameStarterObject.AddBehavior(new TeachCompanionBehaviour());
+            gameStarterObject.AddBehavior(new HeroLearningSkillBehaviour());
             //  gameStarterObject.AddBehavior(new CustomBanditsCampaignBehavior());//会自动覆盖原来的。
             gameStarterObject.AddBehavior(new CustomTownRecruitPrisonersCampaignBehavior());
+            gameStarterObject.AddBehavior(new AddXpToLordTroopBehaviour());
         }
 
 
@@ -84,11 +89,6 @@ namespace Wang
             }
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i] is DefaultTroopCountLimitModel)
-                {
-                    list[i] = new CustomTroopLimitModel();
-                }
-
                 if (list[i] is DefaultPrisonerRecruitmentCalculationModel)
                 {
                     list[i] = new CustomPrisonerRecruitmentCalculationModel();
@@ -107,10 +107,7 @@ namespace Wang
                 {
                     list[i] = new CustomSiegeEventModel();
                 }
-                if (list[i] is DefaultDiplomacyModel)
-                {
-                    list[i] = new CustomDiplomacyModel();
-                }
+
                 if (list[i] is DefaultBanditDensityModel)
                 {
                     list[i] = new CustomBanditDensityModel();
@@ -132,16 +129,12 @@ namespace Wang
         {
             base.OnApplicationTick(dt);
             ShowWar();
-            SortParty();
-        }
 
-        private void SortParty()
-        {
-        }
+            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.M.IsPressed() && !GauntletWangScreen.Show)
+            {
+                ScreenManager.PushScreen(new GauntletWangScreen());
 
-        private void SortUnits(bool recruitUpgradeSort = false)
-        {
-
+            }
         }
 
         /// <summary>
@@ -159,14 +152,16 @@ namespace Wang
                     {
                         num++;
 
-                        text += $"{num}. {item.Name}({Math.Round(item.MapFaction.TotalStrength)}) 战争于 ";
+                        var s = Help.CheckOwnSettlementOccupyedByFaction(item).Count();
+
+                        text += $"{num}.{s} {item.Name}({Math.Round(item.MapFaction.TotalStrength)}) 战争于 ";
                         int num2 = 0;
                         foreach (Kingdom item2 in Kingdom.All.OrderBy((Kingdom w) => w.Name.ToString()))
                         {
                             if (item2 != null && !item.Name.Equals(item2.Name) && item.IsAtWarWith(item2))
                             {
 
-                                text = text + item2.Name + " 和 ";
+                                text += $"{item2.Name} 和 ";
                                 num2++;
                             }
                         }

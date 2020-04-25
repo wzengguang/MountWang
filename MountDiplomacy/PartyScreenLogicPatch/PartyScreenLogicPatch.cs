@@ -7,15 +7,15 @@ using TaleWorlds.Localization;
 
 namespace Wang
 {
-    [HarmonyPatch(typeof(PartyScreenLogic), "Initialize", new Type[]
-{
-    typeof(PartyBase),
-    typeof(MobileParty),
-    typeof(bool),
-    typeof(TextObject),
-    typeof(int),
-    typeof(TextObject)
-})]
+    //    [HarmonyPatch(typeof(PartyScreenLogic), "Initialize", new Type[]
+    //{
+    //    typeof(PartyBase),
+    //    typeof(MobileParty),
+    //    typeof(bool),
+    //    typeof(TextObject),
+    //    typeof(int),
+    //    typeof(TextObject)
+    //})]
     public class PartyScreenLogicPatch
     {
 

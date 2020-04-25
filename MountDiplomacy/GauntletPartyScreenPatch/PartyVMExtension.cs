@@ -69,10 +69,14 @@ namespace Wang
 
         public static void ExecuteUpgradeAll(this PartyVM partyVM)
         {
+            var hasTwoUpgrade = new List<PartyCharacterVM>();
+
             PartyScreenLogic partyScreenLogic = GetPartyScreenLogic(partyVM);
             int num = 0;
             int num2 = 0;
-            foreach (PartyCharacterVM item in partyVM.MainPartyTroops.OrderByDescending((PartyCharacterVM o) => o.Character.Tier).ToList())
+
+            var party = partyVM.MainPartyTroops.OrderByDescending((PartyCharacterVM o) => o.Character.Tier).ToList();
+            foreach (PartyCharacterVM item in party)
             {
                 if (!item.IsHero && item.IsUpgrade1Available && !item.IsUpgrade2Exists && item.NumOfTarget1UpgradesAvailable > 0 && !item.IsUpgrade1Insufficient)
                 {
@@ -84,12 +88,28 @@ namespace Wang
                     partyVM.CurrentCharacter = item;
                     ProcessCommand(partyScreenLogic, partyCommand);
                 }
+
+                if (!item.IsHero && item.IsUpgrade1Exists && item.IsUpgrade1Available && item.IsUpgrade2Exists && item.IsUpgrade2Available)
+                {
+                    hasTwoUpgrade.Add(item);
+                }
             }
+
+            foreach (var item in hasTwoUpgrade)
+            {
+                partyVM.MainPartyTroops.Remove(item);
+                partyVM.MainPartyTroops.Insert(1, item);
+            }
+
+
             RefreshPartyScreen(partyVM);
             if (num > 0)
             {
                 InformationManager.DisplayMessage(new InformationMessage($"升级 {num2} 部队 ({num})"));
             }
+
+
+
         }
     }
 }

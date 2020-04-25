@@ -1,7 +1,7 @@
 C:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord\Modules\Wang\bin\Win64_Shipping_Client\Wang.dll
 C:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord\Modules\Wang\bin\Win64_Shipping_Client\Wang.pdb
+D:\coding\Git\MountWang\MountDiplomacy\obj\Debug\Wang.csprojAssemblyReference.cache
 D:\coding\Git\MountWang\MountDiplomacy\obj\Debug\Wang.csproj.CoreCompileInputs.cache
 D:\coding\Git\MountWang\MountDiplomacy\obj\Debug\Wang.csproj.CopyComplete
 D:\coding\Git\MountWang\MountDiplomacy\obj\Debug\Wang.dll
 D:\coding\Git\MountWang\MountDiplomacy\obj\Debug\Wang.pdb
-D:\coding\Git\MountWang\MountDiplomacy\obj\Debug\Wang.csprojAssemblyReference.cache

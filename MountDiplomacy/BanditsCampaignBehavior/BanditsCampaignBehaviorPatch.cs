@@ -14,6 +14,7 @@ using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TaleWorlds.ObjectSystem;
 
 namespace Wang
 {
@@ -64,32 +65,67 @@ namespace Wang
 
         public static Settlement SelectARandomSettlementForLooterParty(this BanditsCampaignBehavior instance)
         {
+            if (MBRandom.RandomFloat < 0.5)
+            {
+                return null;
+            }
+
+            Dictionary<Settlement, int> banditBySettlement = new Dictionary<Settlement, int>();
+
+            List<MobileParty> banditParties = new List<MobileParty>();
+
+            foreach (var item in Clan.BanditFactions)
+            {
+                foreach (var party in item.Parties)
+                {
+                    if (party.HomeSettlement == null || party.HomeSettlement.IsHideout())
+                    {
+                        continue;
+                    }
+                    if (!banditBySettlement.ContainsKey(party.HomeSettlement))
+                    {
+                        banditBySettlement.Add(party.HomeSettlement, 1);
+                        continue;
+                    }
+                    banditBySettlement[party.HomeSettlement] += 1;
+                }
+            }
 
             var possibles = new Dictionary<Settlement, float>();
 
             foreach (var settlement in Settlement.All)
             {
-                if (settlement.IsTown || settlement.IsCastle)
+
+                if (settlement.IsTown)
                 {
-                    if (settlement.IsStarving)
+                    if (banditBySettlement.ContainsKey(settlement) && banditBySettlement[settlement] > 2)
                     {
-                        possibles.Add(settlement, 0);
                         continue;
                     }
-                    var rate = (settlement.Town.FoodStocks * settlement.Town.Security);
-                    if (rate < 2000)
+
+                    if (settlement.IsStarving || settlement.Town.FoodStocks < 50 || settlement.Town.Security < 80)
                     {
-                        possibles.Add(settlement, rate);
+                        possibles.Add(settlement, settlement.Town.FoodStocks * settlement.Town.Security);
+                        continue;
                     }
                 }
 
                 if (settlement.IsVillage && settlement.IsRaided)
                 {
+                    if (banditBySettlement.ContainsKey(settlement) && banditBySettlement[settlement] > 1)
+                    {
+                        continue;
+                    }
+                    possibles.Add(settlement, 0);
+                    continue;
+                }
+                if (MBRandom.RandomFloat < 0.05)
+                {
                     possibles.Add(settlement, 0);
                 }
 
             }
-            if (possibles.Count == 0 || MBRandom.RandomFloat < 0.2)
+            if (possibles.Count == 0)
             {
                 return null;
             }
@@ -111,6 +147,7 @@ namespace Wang
         [HarmonyPatch("SpawnBanditOrLooterPartiesAroundAHideoutOrSettlement")]
         private static void PostfixActivate(BanditsCampaignBehavior __instance, int numberOfBanditsWillBeSpawned)
         {
+            //(1+(n3*13+200-n2)*0.01,620)
             // InformationManager.DisplayMessage(new InformationMessage("SpawnBanditOrLooterPartiesAroundAHideoutOrSettlement."));
 
             List<Clan> list = Clan.BanditFactions.ToList();
@@ -178,6 +215,7 @@ namespace Wang
         [HarmonyPatch("SpawnAPartyInFaction")]
         private static void SpawnAPartyInFaction(BanditsCampaignBehavior __instance, Clan selectedFaction)
         {
+
             // InformationManager.DisplayMessage(new InformationMessage("SpawnAPartyInFaction."));
 
             PartyTemplateObject defaultPartyTemplate = selectedFaction.DefaultPartyTemplate;

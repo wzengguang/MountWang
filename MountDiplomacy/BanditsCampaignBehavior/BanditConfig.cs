@@ -16,7 +16,7 @@ namespace Wang
         public static int NumberOfMaximumBanditPartiesInEachHideout { get; set; } = 4;
         public static int NumberOfMaximumBanditPartiesAroundEachHideout { get; set; } = 8;
         public static int NumberOfMaximumHideoutsAtEachBanditFaction { get; set; } = 10;
-        public static int NumberOfInitialHideoutsAtEachBanditFaction { get; set; } = 1;
+        public static int NumberOfInitialHideoutsAtEachBanditFaction { get; set; } = 3;
 
         public static int BanditMultiple { get; set; } = 1;
 

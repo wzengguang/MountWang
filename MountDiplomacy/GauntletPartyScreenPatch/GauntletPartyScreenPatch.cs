@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
+using TaleWorlds.CampaignSystem.ViewModelCollection.ClanManagement;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 
@@ -24,8 +25,8 @@ namespace Wang
             {
                 GauntletPartyScreen obj = (GauntletPartyScreen)__instance;
                 PartyVM value = Traverse.Create(obj).Field<PartyVM>("_dataSource").Value;
-                screenLayer = new GauntletLayer(1);
-                screenLayer.LoadMovie("AutoPartyManager", value);
+                screenLayer = new GauntletLayer(99);
+                screenLayer.LoadMovie("AutoPartyManager", new AutoPartyManagerVM(value));
                 screenLayer.InputRestrictions.SetInputRestrictions();
                 obj.AddLayer(screenLayer);
             }
@@ -43,7 +44,6 @@ namespace Wang
                 obj.RemoveLayer(layer2);
             }
         }
-
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Wang
 {
-    public enum SortType
+    public enum TroopSortType
     {
         TierDesc,
         TierAsc,
