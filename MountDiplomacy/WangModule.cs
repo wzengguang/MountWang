@@ -32,8 +32,10 @@ namespace Wang
             };
             using (XmlReader reader = XmlReader.Create(FILE_NAME, settings))
             {
+
                 XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(reader);
+                Settings.Init(xmlDocument);
                 XpMultiplierConfig.Init(xmlDocument);
                 SortPartyConfig.init(xmlDocument);
                 SiegeConfig.Init(xmlDocument);
@@ -52,10 +54,16 @@ namespace Wang
             Harmony.DEBUG = false;
             FileLog.Reset();
             Harmony harmony = new Harmony("mod.bannerlord.wang");
-            harmony.PatchAll();
+            try
+            {
+                harmony.PatchAll();
+            }
+            catch (Exception e)
+            {
 
-
-
+                FileLog.Log(e.StackTrace);
+                throw (e);
+            }
         }
 
 
@@ -89,10 +97,6 @@ namespace Wang
             }
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i] is DefaultPrisonerRecruitmentCalculationModel)
-                {
-                    list[i] = new CustomPrisonerRecruitmentCalculationModel();
-                }
 
                 if (list[i] is DefaultSettlementMilitiaModel)
                 {
@@ -101,16 +105,6 @@ namespace Wang
                 if (list[i] is SettlementGarrisonModel)
                 {
                     list[i] = new CustomSettlementGarrisonModel();
-                }
-
-                if (list[i] is DefaultSiegeEventModel)
-                {
-                    list[i] = new CustomSiegeEventModel();
-                }
-
-                if (list[i] is DefaultBanditDensityModel)
-                {
-                    list[i] = new CustomBanditDensityModel();
                 }
             }
         }

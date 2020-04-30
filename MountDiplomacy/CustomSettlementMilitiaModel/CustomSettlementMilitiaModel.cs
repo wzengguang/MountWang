@@ -56,12 +56,12 @@ namespace Wang
                     //增加忠诚度对民兵影响
                     float value3 = settlement.Town.Loyalty * settlement.Town.Prosperity / (settlement.IsCastle ? 15000f : 40000f);
                     //添加文化因素
-                    if (settlement.Town.Governor == null || settlement.Town.Governor.Culture != settlement.Town.Culture)
+                    if (settlement.OwnerClan == null || settlement.OwnerClan.Culture != settlement.Town.Culture)
                     {
                         value3 /= 10f;
                     }
 
-                    if (settlement.Town.Governor != null && settlement.Town.Governor.Culture == settlement.Town.Culture && settlement.Town.MilitiaParty != null && settlement.Town.MilitiaParty.Party.MemberRoster.TotalRegulars < 200)
+                    if (settlement.OwnerClan != null && settlement.OwnerClan.Culture == settlement.Town.Culture && settlement.Town.MilitiaParty != null && settlement.Town.MilitiaParty.Party.MemberRoster.TotalRegulars < 200)
                     {
                         value3 *= 2f;
                     }

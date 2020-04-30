@@ -1,20 +1,13 @@
 ﻿using HarmonyLib;
 using Helpers;
-using SandBox.GauntletUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.Engine.Screens;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
-using TaleWorlds.ObjectSystem;
 
 namespace Wang
 {
@@ -139,12 +132,12 @@ namespace Wang
     }
 
 
-    [HarmonyPatch(typeof(BanditsCampaignBehavior))]
+    // [HarmonyPatch(typeof(BanditsCampaignBehavior))]
     public class BanditsCampaignBehaviorPatch
     {
 
-        [HarmonyPostfix]
-        [HarmonyPatch("SpawnBanditOrLooterPartiesAroundAHideoutOrSettlement")]
+        //  [HarmonyPostfix]
+        //  [HarmonyPatch("SpawnBanditOrLooterPartiesAroundAHideoutOrSettlement")]
         private static void PostfixActivate(BanditsCampaignBehavior __instance, int numberOfBanditsWillBeSpawned)
         {
             //(1+(n3*13+200-n2)*0.01,620)
@@ -211,8 +204,8 @@ namespace Wang
             }
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch("SpawnAPartyInFaction")]
+        // [HarmonyPostfix]
+        //[HarmonyPatch("SpawnAPartyInFaction")]
         private static void SpawnAPartyInFaction(BanditsCampaignBehavior __instance, Clan selectedFaction)
         {
 

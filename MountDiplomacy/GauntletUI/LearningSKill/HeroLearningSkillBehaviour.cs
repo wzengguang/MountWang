@@ -11,8 +11,8 @@ namespace Wang
     public class HeroLearningSkillBehaviour : CampaignBehaviorBase
     {
 
-        private  List<Hero> LearningSkillHero = new List<Hero>();
-        private  List<SkillObject> LearningSkills = new List<SkillObject>();
+        private List<Hero> LearningSkillHero = new List<Hero>();
+        private List<SkillObject> LearningSkills = new List<SkillObject>();
 
         public override void RegisterEvents()
         {
@@ -25,7 +25,7 @@ namespace Wang
             dataStore.SyncData("LearningSkills", ref LearningSkills);
         }
 
-        public  void SetHeroLearningSkill(Hero hero, SkillObject skill)
+        public void SetHeroLearningSkill(Hero hero, SkillObject skill)
         {
             var index = LearningSkillHero.FindIndex(a => a == hero);
             if (index > -1)
@@ -41,7 +41,7 @@ namespace Wang
 
         }
 
-        public  SkillObject getHeroLearningSkill(Hero hero)
+        public SkillObject getHeroLearningSkill(Hero hero)
         {
             var index = LearningSkillHero.FindIndex(a => a == hero);
             if (index > -1)
@@ -62,8 +62,18 @@ namespace Wang
 
             Dictionary<SkillObject, int> max = new Dictionary<SkillObject, int>();
 
-            var heroes = new List<Hero>() { Hero.MainHero };
-            heroes.AddRange(Hero.MainHero.CompanionsInParty);
+            var heroes = new HashSet<Hero>() { Hero.MainHero };
+            foreach (var item in Hero.MainHero.CompanionsInParty)
+            {
+                heroes.Add(item);
+            }
+            foreach (var item in Hero.MainHero.Clan.Heroes)
+            {
+                if (item.PartyBelongedTo == MobileParty.MainParty)
+                {
+                    heroes.Add(item);
+                }
+            }
 
             foreach (var hero in heroes)
             {
@@ -99,9 +109,9 @@ namespace Wang
                 }
                 var companionSkillValue = hero.GetSkillValue(learningSkill);
 
-                if (max[learningSkill] > companionSkillValue)
+                if (max[learningSkill] > (companionSkillValue + 3))
                 {
-                    var xp = companionSkillValue * XpMultiplierConfig.LearningXPMultipier * max[learningSkill] / (companionSkillValue * 3 + max[learningSkill]);
+                    var xp = companionSkillValue * XpMultiplierConfig.LearningXPMultipier * max[learningSkill] / (companionSkillValue / 2 + max[learningSkill]);
 
                     // hero.AddSkillXp(learningSkill, xp);
                     HeroPatch.Prefix(hero, learningSkill, xp);

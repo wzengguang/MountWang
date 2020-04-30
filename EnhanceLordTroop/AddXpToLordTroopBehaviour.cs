@@ -16,6 +16,7 @@ namespace EnhanceLordTroop
         public override void RegisterEvents()
         {
             CampaignEvents.DailyTickPartyEvent.AddNonSerializedListener(this, DailyTick);
+
         }
 
         public override void SyncData(IDataStore dataStore)
@@ -26,7 +27,7 @@ namespace EnhanceLordTroop
         private void UpdateTroopScale()
         {
             int daysUntilNow = (int)Campaign.Current.CampaignStartTime.ElapsedDaysUntilNow;
-            if (daysUntilNow % 5 != 0 ||
+            if (daysUntilNow % 7 != 0 ||
                 daysUntilNow < 30 ||
                 Clan.PlayerClan.Settlements == null ||
                 Clan.PlayerClan.Settlements.Count() <= 0)
@@ -118,6 +119,11 @@ namespace EnhanceLordTroop
 
         private void DailyTick(MobileParty __instance)
         {
+            if (!XpMultiplierConfigBase.AddTroopXpEnabled || __instance.IsBandit || !__instance.IsActive || __instance.LeaderHero == null || __instance.LeaderHero.MapFaction.IsBanditFaction || __instance == MobileParty.MainParty)
+            {
+                return;
+            }
+
             //foreach (LogEntry item2 in Campaign.Current.LogEntryHistory.GameActionLogs.Reverse())
             //{
             //    IEncyclopediaLog encyclopediaLog;
@@ -134,44 +140,45 @@ namespace EnhanceLordTroop
                 InformationManager.DisplayMessage(new InformationMessage("EnhanceLordTroop Mod ERROR: In UpdateTroopScale Method, you can notice Modder"));
             }
 
-            if (XpMultiplierConfigBase.AddTroopXpEnabled && !__instance.IsBandit && __instance.IsActive && __instance.LeaderHero != null && !__instance.LeaderHero.MapFaction.IsBanditFaction && __instance != MobileParty.MainParty)
+
+
+            float[] ratio = _troopScale;
+            var xps = XpMultiplierConfigBase.TierXps;
+
+            var total = 0f + __instance.MemberRoster.Where(a => !a.Character.IsHero).Select(a => a.Number).Sum();
+            List<CharacterObject>[] troopOrder = new List<CharacterObject>[7] { new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>() };
+
+            var troopsCount = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
+            foreach (var troop in __instance.MemberRoster.Troops)
             {
-
-                float[] ratio = _troopScale;
-                var xps = XpMultiplierConfigBase.TierXps;
-
-                var total = 0f + __instance.MemberRoster.Where(a => !a.Character.IsHero).Select(a => a.Number).Sum();
-                List<CharacterObject>[] troopOrder = new List<CharacterObject>[7] { new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>() };
-
-                var troopsCount = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
-                foreach (var troop in __instance.MemberRoster.Troops)
+                if (troop.IsHero || troop.Tier > 6)
                 {
-                    if (troop.IsHero || troop.Tier > 6)
-                    {
-                        continue;
-                    }
-
-                    troopOrder[troop.Tier].Add(troop);
-                    troopsCount[troop.Tier] += __instance.MemberRoster.GetTroopCount(troop);
+                    continue;
                 }
 
-                for (int i = troopOrder.Length - 1; i > 0; i--)
-                {
-                    if (troopsCount[i] / total < ratio[i])
-                    {
-                        var scale = Math.Cos(1.47 * troopsCount[i] / (ratio[i] * total));
+                troopOrder[troop.Tier].Add(troop);
+                troopsCount[troop.Tier] += __instance.MemberRoster.GetTroopCount(troop);
+            }
 
-                        foreach (var troop in troopOrder[i - 1])
+            for (int i = troopOrder.Length - 1; i > 0; i--)
+            {
+                if (troopsCount[i] / total < ratio[i])
+                {
+                    var scale = Math.Cos(1.47 * troopsCount[i] / (ratio[i] * total));
+
+                    foreach (var troop in troopOrder[i - 1])
+                    {
+                        if (troop.UpgradeTargets != null && troop.UpgradeTargets.Length > 0)
                         {
-                            if (troop.UpgradeTargets != null && troop.UpgradeTargets.Length > 0)
-                            {
-                                var xp = (int)(scale * __instance.MemberRoster.GetTroopCount(troop) * xps[i - 1]);
-                                __instance.Party.MemberRoster.AddXpToTroop(xp, troop);
-                            }
+                            var xp = (int)(scale * __instance.MemberRoster.GetTroopCount(troop) * xps[i - 1]);
+                            __instance.Party.MemberRoster.AddXpToTroop(xp, troop);
                         }
                     }
                 }
             }
+
         }
+
+
     }
 }

@@ -212,7 +212,7 @@ namespace Wang.GauntletUI
         }
 
         [DataSourceProperty]
-        public ClanPartiesVM ClanParties
+        public ClanPartiesVM Informations
         {
             get
             {
@@ -223,7 +223,7 @@ namespace Wang.GauntletUI
                 if (value != _clanParties)
                 {
                     _clanParties = value;
-                    OnPropertyChanged("ClanParties");
+                    OnPropertyChanged("Informations");
                 }
             }
         }
@@ -246,7 +246,7 @@ namespace Wang.GauntletUI
         }
 
         [DataSourceProperty]
-        public ModSettingVM ClanIncome
+        public ModSettingVM ModSettings
         {
             get
             {
@@ -257,7 +257,7 @@ namespace Wang.GauntletUI
                 if (value != _clanIncome)
                 {
                     _clanIncome = value;
-                    OnPropertyChanged("ClanIncome");
+                    OnPropertyChanged("ModSettings");
                 }
             }
         }
@@ -933,9 +933,9 @@ namespace Wang.GauntletUI
             _clan = Hero.MainHero.Clan;
             _playerUpdateTracker = PlayerUpdateTracker.Current;
             ClanMembers = new WangClanMembersVM(RefreshCategoryValues);
-            ClanParties = new ClanPartiesVM(OnAnyExpenseChange, _openPartyAsManage, RefreshCategoryValues);
+            Informations = new ClanPartiesVM(OnAnyExpenseChange, _openPartyAsManage, RefreshCategoryValues);
             ClanFiefs = new ClanFiefsVM(RefreshCategoryValues);
-            ClanIncome = new ModSettingVM(RefreshCategoryValues);
+            ModSettings = new ModSettingVM(RefreshCategoryValues);
             SetSelectedCategory(0);
             Leader = new HeroVM(_clan.Leader);
             CurrentRenown = (int)Clan.PlayerClan.Renown;
@@ -1007,33 +1007,33 @@ namespace Wang.GauntletUI
         private void SetSelectedCategory(int index)
         {
             ClanMembers.IsSelected = false;
-            ClanParties.IsSelected = false;
+            Informations.IsSelected = false;
             ClanFiefs.IsSelected = false;
-            ClanIncome.IsSelected = false;
+            ModSettings.IsSelected = false;
             switch (index)
             {
                 case 0:
                     ClanMembers.IsSelected = true;
                     break;
                 case 1:
-                    ClanParties.IsSelected = true;
+                    Informations.IsSelected = true;
                     break;
                 case 2:
                     ClanFiefs.IsSelected = true;
                     break;
                 default:
-                    ClanIncome.IsSelected = true;
+                    ModSettings.IsSelected = true;
                     break;
             }
             IsMembersSelected = ClanMembers.IsSelected;
-            IsPartiesSelected = ClanParties.IsSelected;
+            IsPartiesSelected = Informations.IsSelected;
             IsFiefsSelected = ClanFiefs.IsSelected;
-            IsIncomeSelected = ClanIncome.IsSelected;
+            IsIncomeSelected = ModSettings.IsSelected;
         }
 
         public void RefreshDailyValues()
         {
-            if (ClanIncome != null)
+            if (ModSettings != null)
             {
                 CurrentGold = Hero.MainHero.Gold;
                 ExplainedNumber goldChange = new ExplainedNumber(0f, (StringBuilder)null);
@@ -1079,8 +1079,8 @@ namespace Wang.GauntletUI
         {
             ClanFiefs.RefreshFiefsList();
             ClanMembers.RefreshMembersList();
-            ClanParties.RefreshPartiesList();
-            ClanIncome.RefreshList();
+            Informations.RefreshPartiesList();
+            ModSettings.RefreshList();
         }
 
         private void ExecuteChangeClanName()

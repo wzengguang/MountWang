@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.MountAndBlade;
 
 namespace Wang
 {
-    public class Help
+    public static class Help
     {
         /// <summary>
         /// 必须在OnGame start 初始化该值为null。
@@ -48,7 +49,7 @@ namespace Wang
             {
                 return Original;
             }
-            InformationManager.DisplayMessage(new InformationMessage("Init SettlementOriginalOwner"));
+            // InformationManager.DisplayMessage(new InformationMessage("Init SettlementOriginalOwner"));
             Original = new Dictionary<IFaction, List<Settlement>>();
 
             var OriginalOwner = new Dictionary<string, List<string>>();
@@ -150,21 +151,42 @@ namespace Wang
 
         }
 
-        public static bool CanDeclareWar(IFaction faction, IFaction faction2)
+
+
+        /// <summary>
+        /// 两国家在停战协定状态
+        /// </summary>
+        /// <param name="faction"></param>
+        /// <param name="faction2"></param>
+        /// <returns></returns>
+        public static bool AtTruce(IFaction faction, IFaction faction2)
         {
-            var atWars = Kingdom.All.Where(a => a.IsAtWarWith(faction)).Count();
-            var atWars2 = Kingdom.All.Where(a => a.IsAtWarWith(faction2)).Count();
+            var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
+            if ((days < Settings.TruceDays) && days != 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CanDeclareWar(IFaction faction, IFaction faction2, bool checkNears = false)
+        {
+            var atWars = Kingdom.All.Where(a => a != faction && a.IsAtWarWith(faction)).Count();
+            var atWars2 = Kingdom.All.Where(a => a != faction2 && a.IsAtWarWith(faction2)).Count();
 
             var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
-            if ((atWars > 2 || atWars2 > 2 || days < 14) && days != 0)
+            if (atWars > 2 || atWars2 > 2 || AtTruce(faction, faction2))
             {
                 return false;
             }
 
-            var nears = GetNearFactions(faction, Kingdom.All, 4);
-            if (!nears.Exists(a => a.MapFaction == faction2.MapFaction))
+            if (checkNears)
             {
-                return false;
+                var nears = GetNearFactions(faction, Kingdom.All, 4);
+                if (!nears.Exists(a => a.MapFaction == faction2.MapFaction))
+                {
+                    return false;
+                }
             }
 
             var settlementByOccupyed = CheckOwnSettlementOccupyedByFaction(faction).ToList();
@@ -176,6 +198,13 @@ namespace Wang
             }
 
             return true;
+        }
+
+
+        public static bool HasMount(this Agent agent)
+        {
+            var item = agent.SpawnEquipment[EquipmentIndex.ArmorItemEndSlot].Item;
+            return item != null && item.HasHorseComponent;
         }
 
     }

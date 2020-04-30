@@ -5,21 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
 
 namespace Wang
 {
-    [HarmonyPatch(typeof(DefaultClanFinanceModel), "CalculateOwnerIncomeFromWorkshop")]
-    public class DefaultClanFinanceModelPatch
+    [HarmonyPatch]
+    public class WorkshopsRelatedPatch
     {
-
-        private static void Postfix(DefaultClanFinanceModel __instance, Workshop workshop, ref int __result)
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(WorkshopsCampaignBehavior), "OnWarDeclared")]
+        private static bool OnWarDeclared(IFaction faction1, IFaction faction2)
         {
-            __result = (int)((float)Math.Max(0, workshop.ProfitMade) / __instance.RevenueSmoothenFraction());
+            return false;
+        }
 
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(DefaultClanFinanceModel), "CalculateOwnerIncomeFromWorkshop")]
+        private static void CalculateOwnerIncomeFromWorkshop(DefaultClanFinanceModel __instance, ref int __result, Workshop workshop)
+        {
             if (workshop.Owner != null &&
                 (workshop.Owner.Clan == Clan.PlayerClan &&
                 workshop.Owner.Clan.MapFaction.IsAtWarWith(workshop.Settlement.MapFaction)) &&

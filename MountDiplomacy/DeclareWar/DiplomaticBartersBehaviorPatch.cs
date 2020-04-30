@@ -14,25 +14,16 @@ namespace Wang
     [HarmonyPatch(typeof(DiplomaticBartersBehavior))]
     public class DiplomaticBartersBehaviorPatch
     {
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         [HarmonyPatch("ConsiderWar")]
-        public static void ConsiderWar(IFaction mapFaction, IFaction otherMapFaction)
+        public static bool ConsiderWar(IFaction mapFaction, IFaction otherMapFaction)
         {
-            if (!mapFaction.IsKingdomFaction || !otherMapFaction.IsKingdomFaction)
+            if (!mapFaction.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(mapFaction, otherMapFaction, true))
             {
-                return;
+                return false;
             }
 
-            DeclareWarBarterable declareWarBarterable = new DeclareWarBarterable(mapFaction.Leader, otherMapFaction);
-            if (declareWarBarterable.GetValueForFaction(mapFaction) > 500 && Help.CanDeclareWar(mapFaction, otherMapFaction))
-            {
-
-                declareWarBarterable.Apply();
-
-            }
-
+            return true;
         }
-
-
     }
 }

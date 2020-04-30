@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,26 +10,21 @@ using TaleWorlds.Core;
 
 namespace Wang
 {
-    public class CustomPrisonerRecruitmentCalculationModel : DefaultPrisonerRecruitmentCalculationModel
+    [HarmonyPatch(typeof(DefaultPrisonerRecruitmentCalculationModel))]
+    public class PrisonerRecruitmentCalculationModelPatch
     {
-
-        public override float[] GetDailyRecruitedPrisoners(MobileParty mainParty)
+        [HarmonyPrefix]
+        [HarmonyPatch("GetDailyRecruitedPrisoners")]
+        public static bool GetDailyRecruitedPrisoners(ref float[] __result, MobileParty mainParty)
         {
-
-
-
-            if (RecruitConfig.RecruitChange == null || RecruitConfig.RecruitChange.Length < 5)
-            {
-                return base.GetDailyRecruitedPrisoners(mainParty);
-            }
-
             var f = new float[RecruitConfig.RecruitChange.Length];
 
             for (int i = 0; i < f.Length; i++)
             {
                 f[i] = RecruitConfig.RecruitChange[i];
             }
-            return f;
+            __result = f;
+            return false;
         }
     }
 }

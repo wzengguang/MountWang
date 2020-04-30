@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,19 +8,45 @@ using TaleWorlds.CampaignSystem.SandBox.GameComponents.Map;
 
 namespace Wang
 {
-    public class CustomBanditDensityModel : DefaultBanditDensityModel
+    [HarmonyPatch(typeof(DefaultBanditDensityModel))]
+    public class CustomBanditDensityModel
     {
+        [HarmonyPostfix]
+        [HarmonyPatch("NumberOfMaximumLooterParties", MethodType.Getter)]
+        private static void Postfix1(ref int __result)
+        {
+            __result = BanditConfig.NumberOfMaximumLooterParties;
+        }
 
-        public override int NumberOfMaximumLooterParties => BanditConfig.NumberOfMaximumLooterParties;
-
-        public override int NumberOfMinimumBanditPartiesInAHideoutToInfestIt => BanditConfig.NumberOfMinimumBanditPartiesInAHideoutToInfestIt;
-
-        public override int NumberOfMaximumBanditPartiesInEachHideout => BanditConfig.NumberOfMaximumBanditPartiesAroundEachHideout;
-
-        public override int NumberOfMaximumBanditPartiesAroundEachHideout => BanditConfig.NumberOfMaximumBanditPartiesAroundEachHideout;
-
-        public override int NumberOfMaximumHideoutsAtEachBanditFaction => BanditConfig.NumberOfMaximumHideoutsAtEachBanditFaction;
-
-        public override int NumberOfInitialHideoutsAtEachBanditFaction => BanditConfig.NumberOfInitialHideoutsAtEachBanditFaction;
+        [HarmonyPostfix]
+        [HarmonyPatch("NumberOfMinimumBanditPartiesInAHideoutToInfestIt", MethodType.Getter)]
+        private static void Postfix2(ref int __result)
+        {
+            __result = BanditConfig.NumberOfMinimumBanditPartiesInAHideoutToInfestIt;
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch("NumberOfMaximumBanditPartiesInEachHideout", MethodType.Getter)]
+        private static void Postfix3(ref int __result)
+        {
+            __result = BanditConfig.NumberOfMaximumBanditPartiesInEachHideout;
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch("NumberOfMaximumBanditPartiesAroundEachHideout", MethodType.Getter)]
+        private static void Postfix4(ref int __result)
+        {
+            __result = BanditConfig.NumberOfMaximumBanditPartiesAroundEachHideout;
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch("NumberOfMaximumHideoutsAtEachBanditFaction", MethodType.Getter)]
+        private static void Postfix5(ref int __result)
+        {
+            __result = BanditConfig.NumberOfMaximumHideoutsAtEachBanditFaction;
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch("NumberOfInitialHideoutsAtEachBanditFaction", MethodType.Getter)]
+        private static void Postfix6(ref int __result)
+        {
+            __result = BanditConfig.NumberOfInitialHideoutsAtEachBanditFaction;
+        }
     }
 }

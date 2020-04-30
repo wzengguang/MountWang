@@ -15,7 +15,7 @@ namespace Wang
     [HarmonyPatch(typeof(PrisonerEscapeCampaignBehavior), "DailyHeroTick")]
     public class PrisonerEscapeCampaignBehaviorPatch
     {
-        private static void Postfix(Hero hero)
+        private static bool Prefix(Hero hero)
         {
             if (hero.IsPrisoner && hero.PartyBelongedToAsPrisoner != null && hero != Hero.MainHero)
             {
@@ -46,6 +46,7 @@ namespace Wang
                     EndCaptivityAction.ApplyByEscape(hero);
                 }
             }
+            return false;
         }
     }
 }

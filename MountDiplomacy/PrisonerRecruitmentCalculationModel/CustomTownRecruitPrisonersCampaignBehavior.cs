@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-
 namespace Wang
 {
     public class CustomTownRecruitPrisonersCampaignBehavior : CampaignBehaviorBase, ICampaignBehavior
@@ -29,7 +28,8 @@ namespace Wang
             }
 
             TroopRoster prisonRoster = town.GarrisonParty.PrisonRoster;
-            float[] dailyRecruitedPrisoners = Campaign.Current.Models.PrisonerRecruitmentCalculationModel.GetDailyRecruitedPrisoners(MobileParty.MainParty);
+            float[] dailyRecruitedPrisoners = { };
+            PrisonerRecruitmentCalculationModelPatch.GetDailyRecruitedPrisoners(ref dailyRecruitedPrisoners, MobileParty.MainParty);
             int num = MBRandom.RandomInt(prisonRoster.Count);
 
             for (int i = 0; i < prisonRoster.Count; i++)
@@ -48,7 +48,7 @@ namespace Wang
 
                     dailyRecruitedPrisoners[tier] -= 1f;
 
-                    if (MBRandom.RandomFloat < (town.Owner.LeaderHero == Hero.MainHero ? 0.5 : 0.2))
+                    if (MBRandom.RandomFloat < (town.Owner.LeaderHero == Hero.MainHero ? 0.8 : 0.5))
                     {
                         town.GarrisonParty.MemberRoster.AddToCounts(characterAtIndex, 1);
                     }

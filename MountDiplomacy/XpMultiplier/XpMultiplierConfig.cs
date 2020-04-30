@@ -13,10 +13,8 @@ namespace Wang
         public static int PlayerMultipier { get; set; } = 1;
         public static int TeammateMultipier { get; set; } = 1;
 
-        public static int LearningXPMultipier { get; set; } = 0;
+        public static int LearningXPMultipier { get; set; } = 1;
 
-        public static int CombatTips { get; set; } = 1;
-        public static int RaiseTheMeek { get; set; } = 1;
 
         public static new void Init(XmlDocument xmlDocument)
         {
@@ -30,10 +28,6 @@ namespace Wang
             PlayerMultipier = int.Parse(xmlNode.SelectSingleNode("PlayerMultipier").InnerText);
             TeammateMultipier = int.Parse(xmlNode.SelectSingleNode("TeammateMultipier").InnerText);
             LearningXPMultipier = int.Parse(xmlNode.SelectSingleNode("LearningXPMultipier").InnerText);
-
-            CombatTips = int.Parse(xmlNode.SelectSingleNode("CombatTips").InnerText);
-            RaiseTheMeek = int.Parse(xmlNode.SelectSingleNode("RaiseTheMeek").InnerText);
-
         }
     }
 }
