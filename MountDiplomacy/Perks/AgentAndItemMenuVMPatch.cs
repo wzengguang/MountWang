@@ -15,9 +15,27 @@ using TaleWorlds.Library;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Inventory;
 using System.Reflection;
 using Helpers;
+using SandBox;
 
 namespace Wang
 {
+
+    //MissionEquipment：Agent的武器。 Agent.Equipment->属性
+    //MissionEquipment的字段 MissionWeapon[]。表示所有的武器槽里的武器。
+    //MissionWeapon的字段_dataValue，_maxDataValue表示弹药数量。根据weaponComponentData.MaxDataValue产生。
+
+    //Equipment表示单位的所有装备，包括护甲马武器。Agent.SpawnEquipment 表示Agent实例化时chractorObject自带的装备。
+    //Equipment的字段 EquipmentElement[]表示所有装备槽里的武器。EquipmentElement是Struct
+
+    //EquipmentElement的属性 ItemObject。表示对应的物品。
+
+    //ItemObject的属性 ItemComponent表示物品的性质，WeaponComponent、HorseComponent、ArmorComponent、SaddleComponent表示装备。
+    //WeaponComponent 的 WeaponComponentData[]表示武器的参数。实际集合中只有一个值。
+
+    //WeaponStatsData 结构，表示agent装备武器时，产生的新的武器的状态。WeaponStatsData根据WeaponComponentData产生。
+
+
+
     public static class PerkHelp
     {
         public static ItemObject.ItemUsageSetFlags GetItemUsageSetFlag(WeaponComponentData item)
@@ -30,41 +48,53 @@ namespace Wang
         }
 
 
-        public static void TwoHand3(WeaponStatsData[] weaponStatsData, CharacterObject hero, int i)
-        {
-            if (hero.GetPerkValue(DefaultPerks.TwoHanded.PowerBasher))
-            {
-                if (weaponStatsData[i].SwingSpeed < 85)
-                {
-                    weaponStatsData[i].SwingDamage = (int)(weaponStatsData[i].SwingDamage * 1.1);
-                    weaponStatsData[i].SwingSpeed = (int)(weaponStatsData[i].SwingSpeed * 1.05);
-                    weaponStatsData[i].ThrustDamage = (int)(weaponStatsData[i].ThrustDamage * 1.1);
-                    weaponStatsData[i].ThrustSpeed = (int)(weaponStatsData[i].ThrustSpeed * 1.05);
-                }
-            }
-            else if (hero.GetPerkValue(DefaultPerks.TwoHanded.QuickPlunder))
-            {
-                if (weaponStatsData[i].SwingSpeed > 100)
-                {
-                    weaponStatsData[i].SwingDamage = (int)(weaponStatsData[i].SwingDamage * 1.05);
-                    weaponStatsData[i].SwingSpeed = (int)(weaponStatsData[i].SwingSpeed * 1.02);
-                    weaponStatsData[i].ThrustDamage = (int)(weaponStatsData[i].ThrustDamage * 1.05);
-                    weaponStatsData[i].ThrustSpeed = (int)(weaponStatsData[i].ThrustSpeed * 1.02);
+        //public static void TwoHand3(WeaponStatsData[] weaponStatsData, CharacterObject hero, int i, Agent agent)
+        //{
+        //    if (hero.GetPerkValue(DefaultPerks.TwoHanded.PowerBasher) && weaponStatsData[i].SwingSpeed < 85)
+        //    {
 
-                }
-            }
-        }
+        //        weaponStatsData[i].SwingDamage += (int)(weaponStatsData[i].SwingDamage * DefaultPerks.TwoHanded.PowerBasher.PrimaryBonus * 4);
+        //        weaponStatsData[i].SwingSpeed += (int)(weaponStatsData[i].SwingSpeed * DefaultPerks.TwoHanded.PowerBasher.SecondaryBonus * 4);
+        //        weaponStatsData[i].ThrustDamage += (int)(weaponStatsData[i].ThrustDamage * DefaultPerks.TwoHanded.PowerBasher.PrimaryBonus * 4);
+        //        weaponStatsData[i].ThrustSpeed += (int)(weaponStatsData[i].ThrustSpeed * DefaultPerks.TwoHanded.PowerBasher.SecondaryBonus * 4);
+
+        //    }
+        //    else if (hero.GetPerkValue(DefaultPerks.TwoHanded.QuickPlunder) && weaponStatsData[i].SwingSpeed > 100)
+        //    {
+
+        //        weaponStatsData[i].SwingDamage += (int)(weaponStatsData[i].SwingDamage * DefaultPerks.TwoHanded.QuickPlunder.PrimaryBonus * 4);
+        //        weaponStatsData[i].SwingSpeed += (int)(weaponStatsData[i].SwingSpeed * DefaultPerks.TwoHanded.QuickPlunder.SecondaryBonus * 4);
+        //        weaponStatsData[i].ThrustDamage += (int)(weaponStatsData[i].ThrustDamage * DefaultPerks.TwoHanded.QuickPlunder.PrimaryBonus * 4);
+        //        weaponStatsData[i].ThrustSpeed += (int)(weaponStatsData[i].ThrustSpeed * DefaultPerks.TwoHanded.QuickPlunder.SecondaryBonus * 4);
+
+        //    }
+
+        //    if (hero.GetPerkValue(DefaultPerks.TwoHanded.EdgePlacement))
+        //    {
+        //        weaponStatsData[i].SwingDamage += (int)(weaponStatsData[i].ThrustDamage * DefaultPerks.TwoHanded.EdgePlacement.PrimaryBonus * 4);
+        //    }
+        //    if (hero.GetPerkValue(DefaultPerks.TwoHanded.ExtraDamage))
+        //    {
+        //        weaponStatsData[i].SwingDamage += (int)(weaponStatsData[i].ThrustDamage * DefaultPerks.TwoHanded.ExtraDamage.PrimaryBonus * 4);
+        //        weaponStatsData[i].ThrustDamage += (int)(weaponStatsData[i].ThrustDamage * DefaultPerks.TwoHanded.ExtraDamage.PrimaryBonus * 4);
+        //    }
+
+        //    if (agent.IsMount && hero.GetPerkValue(DefaultPerks.TwoHanded.MountedTwoHanded))
+        //    {
+        //        weaponStatsData[i].WeaponBalance += (int)(weaponStatsData[i].WeaponBalance * DefaultPerks.TwoHanded.ExtraDamage.PrimaryBonus);
+        //    }
+        //}
 
     }
 
 
     [HarmonyPatch]
-    public class AgentAndItemMenuVMPatch
+    public static class AgentAndItemMenuVMPatch
     {
         private static readonly FieldInfo MaxAmmoField = typeof(MissionWeapon).GetField("_maxDataValue", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
         /// <summary>
-        /// 弹药
+        /// Mission.SpawnAgent调用Agent.InitializeMissionEquipment,给Equipment赋值。
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Agent), "set_Equipment")]
@@ -131,7 +161,7 @@ namespace Wang
         }
 
         /// <summary>
-        /// 可以在马上使用弩和长弓
+        /// Agent装备（或捡起）Weapon时调用。agent丢掉装备的时候也调用。
         /// </summary>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Agent), "WeaponEquipped")]
@@ -151,12 +181,6 @@ namespace Wang
                             {
                                 weaponStatsData[i].ItemUsageIndex = MBItem.GetItemUsageIndex("bow");
                             }
-                            //精度
-                            if (__instance.HasMount && hero.GetPerkValue(DefaultPerks.Riding.Sharpshooter))
-                            {
-                                weaponStatsData[i].Accuracy = (int)(weaponStatsData[i].Accuracy * 1.15);
-                            }
-
                             break;
                         case WeaponClass.Crossbow:
                             //弩可以在马上用。
@@ -165,24 +189,6 @@ namespace Wang
                             {
                                 weaponStatsData[i].WeaponFlags = weaponStatsData[i].WeaponFlags & ~(ulong)WeaponFlags.CantReloadOnHorseback;
                             }
-
-
-
-                            //精度
-                            if (__instance.HasMount && hero.GetPerkValue(DefaultPerks.Riding.Sharpshooter))
-                            {
-                                weaponStatsData[i].Accuracy = (int)(weaponStatsData[i].Accuracy * 1.15);
-                            }
-                            break;
-
-                        case WeaponClass.TwoHandedSword:
-                            PerkHelp.TwoHand3(weaponStatsData, hero, i);
-                            break;
-
-                        case WeaponClass.TwoHandedAxe:
-                            PerkHelp.TwoHand3(weaponStatsData, hero, i);
-
-
                             break;
                     }
                 }

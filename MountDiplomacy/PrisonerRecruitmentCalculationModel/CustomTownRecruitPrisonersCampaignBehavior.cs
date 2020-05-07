@@ -17,10 +17,10 @@ namespace Wang
 
         public override void RegisterEvents()
         {
-            CampaignEvents.DailyTickTownEvent.AddNonSerializedListener(this, recruit);
+            CampaignEvents.DailyTickTownEvent.AddNonSerializedListener(this, Recruit);
         }
 
-        public void recruit(Town town)
+        public void Recruit(Town town)
         {
             if ((!town.IsCastle && !town.IsTown) || town.GarrisonParty == null || town.GarrisonParty.PrisonRoster == null || town.Settlement.IsStarving)
             {
@@ -28,7 +28,7 @@ namespace Wang
             }
 
             TroopRoster prisonRoster = town.GarrisonParty.PrisonRoster;
-            float[] dailyRecruitedPrisoners = { };
+            float[] dailyRecruitedPrisoners = Array.Empty<float>();
             PrisonerRecruitmentCalculationModelPatch.GetDailyRecruitedPrisoners(ref dailyRecruitedPrisoners, MobileParty.MainParty);
             int num = MBRandom.RandomInt(prisonRoster.Count);
 

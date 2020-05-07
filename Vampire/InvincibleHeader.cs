@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using SandBox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,20 +14,17 @@ using static TaleWorlds.MountAndBlade.Mission;
 namespace Vampire
 {
 
-    [HarmonyPatch(typeof(Agent), "HandleBlow")]
+    [HarmonyPatch(typeof(SandboxAgentStatCalculateModel), "UpdateHumanStats")]
     public class InvincibleHeader
     {
-        private static bool Prefix(Agent __instance, ref Blow b)
+        private static void Postfix(Agent agent, AgentDrivenProperties agentDrivenProperties)
         {
-            if (b.VictimBodyPart == BoneBodyPartType.Head && __instance.IsHuman && __instance.IsHero)
+
+            if (agent.IsHero && agent.IsFemale)
             {
-                var obj = __instance.Character as CharacterObject;
-                if (obj.HeroObject != Hero.MainHero && obj.HeroObject.Clan != null && obj.HeroObject.Clan.Leader == Hero.MainHero)
-                {
-                    b.InflictedDamage = 1;
-                }
+                Equipment spawnEquipment = agent.SpawnEquipment;
+                agentDrivenProperties.ArmorHead = spawnEquipment.GetHeadArmorSum() + 99;
             }
-            return true;
         }
     }
 }

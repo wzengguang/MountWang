@@ -3,12 +3,9 @@ using Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
-using TaleWorlds.CampaignSystem.SandBox.GameComponents.Map;
 using TaleWorlds.Core;
 
 namespace Wang
@@ -27,7 +24,10 @@ namespace Wang
             IFaction faction = null;
             foreach (IFaction item in results)
             {
-                if (Help.AtTruce(kingdom, item))
+                //var str = $"{results.Count()}:{kingdom.Name}:{item.Name}:{num / 500000}{Help.CanDeclareWar(kingdom, item)}";
+                //InformationManager.DisplayMessage(new InformationMessage(str));
+
+                if (!Help.CanDeclareWar(kingdom, item, false, true))
                 {
                     continue;
                 }
@@ -49,7 +49,8 @@ namespace Wang
                     num = scoreOfDeclaringWar;
                 }
             }
-            if (faction != null && MBRandom.RandomFloat < Math.Min(0.30f, num / 100000f) && Help.CanDeclareWar(kingdom, faction))
+
+            if (faction != null && MBRandom.RandomFloat < Math.Min(0.3f, num / 500000f))
             {
                 DeclareWarAction.ApplyDeclareWarOverProvocation(kingdom, faction);
             }

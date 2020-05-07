@@ -22,14 +22,19 @@ namespace Wang.Perks
             //PerkHelper.AddPerkBonusForCharacter(DefaultPerks.Polearm.ExtraHp, character, ref bonuses);
             //PerkHelper.AddPerkBonusForCharacter(DefaultPerks.Athletics.Endurance, character, ref bonuses);
             //PerkHelper.AddPerkBonusForCharacter(DefaultPerks.Medicine.PreventiveMedicine, character, ref bonuses);
-
-            var ScoutingExtra1 = PerkObject.FindFirst(a => a.Name.GetID() == "dDKOoD3e");
-            if (ScoutingExtra1 != null)
+            try
             {
-                PerkHelper.AddPerkBonusForCharacter(ScoutingExtra1, character, ref bonuses);
+                var ScoutingExtra1 = PerkObject.FindFirst(a => a.Name.GetID() == "dDKOoD3e");
+                if (ScoutingExtra1 != null)
+                {
+                    PerkHelper.AddPerkBonusForCharacter(ScoutingExtra1, character, ref bonuses);
+                }
+                __result = MBMath.Round(bonuses.ResultNumber);
+            }
+            catch (Exception)
+            {
             }
 
-            __result = MBMath.Round(bonuses.ResultNumber);
         }
 
     }

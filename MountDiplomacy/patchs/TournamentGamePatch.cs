@@ -1,19 +1,23 @@
 ﻿using HarmonyLib;
+using SandBox.TournamentMissions.Missions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Conversation.Tags;
+using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 
 namespace Wang
 {
-    [HarmonyPatch(typeof(TournamentGame))]
+    [HarmonyPatch]
     class TournamentGamePatch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("GetTournamentPrize")]
+        [HarmonyPatch(typeof(TournamentGame), "GetTournamentPrize")]
         private static bool GetTournamentPrize(TournamentGame __instance, ref ItemObject __result)
         {
             string[] e = new string[28]
@@ -71,5 +75,62 @@ namespace Wang
             __result = itemObject;
             return false;
         }
+
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(TournamentBehavior), "CalculateBet")]
+        private static void CalculateBet(ref TournamentBehavior __instance)
+        {
+            if (__instance.CurrentMatch == null || __instance.CurrentMatch.Teams == null)
+            {
+                return;
+            }
+            var arr = new int[__instance.CurrentMatch.Teams.Count()];
+            var atIndex = -1;
+
+            var num = 0;
+            foreach (var team in __instance.CurrentMatch.Teams)
+            {
+                foreach (var participant in team.Participants)
+                {
+                    if (participant.Character == CharacterObject.PlayerCharacter)
+                    {
+                        atIndex = num;
+                    }
+                    arr[num] += participant.Character.Level;
+                }
+                num++;
+            }
+
+            var other = 0;
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (i != atIndex)
+                {
+                    other += arr[i];
+                }
+            }
+
+            if (atIndex == -1)
+            {
+                return;
+            }
+
+            other /= (arr.Length - 1);
+
+            var ratio = 2f * other / arr[atIndex];
+
+            ratio *= 1 + (arr.Length - 2) * 0.2f;
+
+            var odd = MathF.Clamp(ratio, 1.5f, 8f);
+
+            Traverse.Create(__instance).Property("BetOdd").SetValue(odd);
+
+        }
+
+
     }
+
+
+
 }

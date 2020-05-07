@@ -103,7 +103,7 @@ namespace Vampire
                 return _instance != null ? _instance : new Config
                 {
                     Heal_level_per = 10,
-                    Heal_kill_per = 1,
+                    Heal_kill_per = 10,
                     Heal_kill_max = 10,
                     Heal_skill_kill_max = 10,
                     Heal_skill_passive_max = 5,

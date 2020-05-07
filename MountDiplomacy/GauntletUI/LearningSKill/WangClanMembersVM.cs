@@ -1,7 +1,9 @@
-﻿using Helpers;
+﻿using HarmonyLib;
+using Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
@@ -37,27 +39,27 @@ namespace Wang.GauntletUI
 
         private string _companionsText;
 
-        private string _kickFromClanText;
+        private string _wishPerksText;
 
-        private HintViewModel _kickFromClanActionHint;
+        private HintViewModel _canWashPerksHint;
 
         private bool _isAnyValidMemberSelected;
 
-        private bool _canKickCurrentMemberFromClan;
+        private bool _canWashPerks;
 
         [DataSourceProperty]
-        public HintViewModel KickFromClanActionHint
+        public HintViewModel CanWashPerksHint
         {
             get
             {
-                return _kickFromClanActionHint;
+                return _canWashPerksHint;
             }
             set
             {
-                if (value != _kickFromClanActionHint)
+                if (value != _canWashPerksHint)
                 {
-                    _kickFromClanActionHint = value;
-                    OnPropertyChanged("KickFromClanActionHint");
+                    _canWashPerksHint = value;
+                    OnPropertyChanged("CanWashPerksHint");
                 }
             }
         }
@@ -80,18 +82,18 @@ namespace Wang.GauntletUI
         }
 
         [DataSourceProperty]
-        public bool CanKickCurrentMemberFromClan
+        public bool CanWashPerks
         {
             get
             {
-                return _canKickCurrentMemberFromClan;
+                return _canWashPerks;
             }
             set
             {
-                if (value != _canKickCurrentMemberFromClan)
+                if (value != _canWashPerks)
                 {
-                    _canKickCurrentMemberFromClan = value;
-                    OnPropertyChanged("CanKickCurrentMemberFromClan");
+                    _canWashPerks = value;
+                    OnPropertyChanged("CanWashPerks");
                 }
             }
         }
@@ -165,18 +167,18 @@ namespace Wang.GauntletUI
         }
 
         [DataSourceProperty]
-        public string KickFromClanText
+        public string WishPerksText
         {
             get
             {
-                return _kickFromClanText;
+                return _wishPerksText;
             }
             set
             {
-                if (value != _kickFromClanText)
+                if (value != _wishPerksText)
                 {
-                    _kickFromClanText = value;
-                    OnPropertyChanged("KickFromClanText");
+                    _wishPerksText = value;
+                    OnPropertyChanged("WishPerksText");
                 }
             }
         }
@@ -256,7 +258,7 @@ namespace Wang.GauntletUI
             _faction = Hero.MainHero.Clan;
             Family = new MBBindingList<WangLordItemVM>();
             Companions = new MBBindingList<WangLordItemVM>();
-            KickFromClanActionHint = new HintViewModel();
+            CanWashPerksHint = new HintViewModel();
             RefreshMembersList();
             RefreshValues();
         }
@@ -265,7 +267,7 @@ namespace Wang.GauntletUI
         {
             base.RefreshValues();
             FamilyText = GameTexts.FindText("str_family_group").ToString();
-            KickFromClanText = GameTexts.FindText("str_kick_from_clan").ToString();
+            WishPerksText = new TextObject("{=wang_washPerk}").ToString();
             TraitsText = GameTexts.FindText("str_traits_group").ToString();
             LearnSkillFromOtherText = new TextObject("{=str_learning_skill}").ToString();
             Family.ApplyActionOnAllItems(delegate (WangLordItemVM x)
@@ -335,11 +337,8 @@ namespace Wang.GauntletUI
             }
             member.Initialized = false;
             CurrentSelectedMember = member;
-            bool flag = member.GetHero() == Hero.MainHero;
-            bool flag2 = _faction.Companions.Contains(member.GetHero());
-            bool flag3 = Campaign.Current.IssueManager.IssueSolvingCompanionList.Contains(member.GetHero());
-            CanKickCurrentMemberFromClan = (!flag && flag2 && !flag3);
-            KickFromClanActionHint.HintText = CampaignUIHelper.GetKickFromClanReasonString(flag, flag2, flag3);
+            RefreshCanWashPerks();
+            CanWashPerksHint.HintText = new TextObject("{=wang_washHint}").ToString();
             if (member != null)
             {
                 member.IsSelected = true;
@@ -348,19 +347,54 @@ namespace Wang.GauntletUI
             }
         }
 
-        private void ExecuteKickCurrentMemberFromClan()
+        private void WishCurrentMemberPerks()
         {
-            if (CanKickCurrentMemberFromClan)
+
+            if (CanWashPerks)
             {
-                InformationManager.ShowInquiry(new InquiryData(string.Empty, GameTexts.FindText("str_kick_companion_from_clan_inquiry").ToString(), isAffirmativeOptionShown: true, isNegativeOptionShown: true, GameTexts.FindText("str_yes").ToString(), GameTexts.FindText("str_no").ToString(), OnKickFromClan, null));
+                var time = (3 - Campaign.Current.GetCampaignBehavior<HeroLearningSkillBehaviour>().GetWishPerkTime(CurrentSelectedMember.GetHero())).ToString();
+                MBTextManager.SetTextVariable("WASH_TIME", time);
+                InformationManager.ShowInquiry(new InquiryData(string.Empty, new TextObject("{=wang_washPerkConfirm}").ToString(), isAffirmativeOptionShown: true, isNegativeOptionShown: true, GameTexts.FindText("str_yes").ToString(), GameTexts.FindText("str_no").ToString(), OnWishPerks, null));
             }
         }
 
-        private void OnKickFromClan()
+        private void OnWishPerks()
         {
-            RemoveCompanionAction.ApplyByFire(_faction, CurrentSelectedMember.GetHero());
-            _onRefresh?.Invoke();
+            var hero = CurrentSelectedMember.GetHero();
+            hero.ClearPerks();
+            hero.HeroDeveloper.GetType().GetMethod("DiscoverOpenedPerks", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(hero.HeroDeveloper, null);
+
+            WashAttributes(hero);
+            RefreshCanWashPerks(true);
         }
+
+        private void RefreshCanWashPerks(bool wash = false)
+        {
+            var be = Campaign.Current.GetCampaignBehavior<HeroLearningSkillBehaviour>();
+
+            CanWashPerks = (wash ? be.SetWishPerkTime(CurrentSelectedMember.GetHero()) : be.GetWishPerkTime(CurrentSelectedMember.GetHero())) < 3;
+        }
+
+
+        private void WashAttributes(Hero hero)
+        {
+            try
+            {
+                var totalAttributes = 0;
+                for (int i = 0; i < 6; i++)
+                {
+                    totalAttributes += hero.GetAttributeValue((CharacterAttributesEnum)i);
+                }
+
+                hero.HeroDeveloper.UnspentAttributePoints += totalAttributes;
+                hero.ClearAttributes();
+            }
+            catch (Exception)
+            {
+                InformationManager.DisplayMessage(new InformationMessage("WashAttributes"));
+            }
+        }
+
 
         private void ExecuteLink(string link)
         {

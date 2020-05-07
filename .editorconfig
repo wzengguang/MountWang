@@ -1,0 +1,16 @@
+﻿[*.cs]
+
+# CA1305: 指定 IFormatProvider
+dotnet_diagnostic.CA1305.severity = silent
+
+# CA1062: 验证公共方法的参数
+dotnet_diagnostic.CA1062.severity = silent
+
+# IDE0060: 删除未使用的参数
+dotnet_code_quality_unused_parameters = all:silent
+
+# CA1822: 将成员标记为 static
+dotnet_diagnostic.CA1822.severity = suggestion
+
+# CA1052: 静态容器类型应为 Static 或 NotInheritable
+dotnet_diagnostic.CA1052.severity = silent

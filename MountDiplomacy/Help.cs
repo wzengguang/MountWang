@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.LogEntries;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -131,7 +132,7 @@ namespace Wang
 
             foreach (IFaction item in kingdoms)
             {
-                float num6 = 400f;
+                float num6 = 1000f;
                 foreach (Settlement settlement in item.Settlements.Where(a => a.IsTown || a.IsCastle))
                 {
                     foreach (Settlement settlement1 in list)
@@ -161,21 +162,40 @@ namespace Wang
         /// <returns></returns>
         public static bool AtTruce(IFaction faction, IFaction faction2)
         {
-            var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
-            if ((days < Settings.TruceDays) && days != 0)
+            // var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
+
+            var days = GetDaysSinceTruceWithFaction(faction, faction2);
+            if ((days < Settings.TruceDays) && days > 0)
             {
                 return true;
             }
             return false;
         }
 
-        public static bool CanDeclareWar(IFaction faction, IFaction faction2, bool checkNears = false)
+        public static float GetDaysSinceTruceWithFaction(IFaction faction, IFaction faction2)
+        {
+            IEnumerable<LogEntry> gameActionLogs = Campaign.Current.LogEntryHistory.GameActionLogs;
+            foreach (LogEntry logEntry in gameActionLogs)
+            {
+
+                if (logEntry is MakePeaceLogEntry && ((((MakePeaceLogEntry)logEntry).Faction1 == faction.MapFaction && ((MakePeaceLogEntry)logEntry).Faction2 == faction2.MapFaction) || (((MakePeaceLogEntry)logEntry).Faction1 == faction2.MapFaction && ((MakePeaceLogEntry)logEntry).Faction2 == faction.MapFaction)))
+                {
+                    var days = (float)(CampaignTime.Now.ToDays - logEntry.GameTime.ToDays);
+                    //InformationManager.DisplayMessage(new InformationMessage(gameActionLogs.Count().ToString() + faction.Name.ToString() + days.ToString() + faction2.Name.ToString()));
+                    return days;
+                }
+            }
+            return 0f;
+        }
+
+
+        public static bool CanDeclareWar(IFaction faction, IFaction faction2, bool checkNears = false, bool checkTruce = false)
         {
             var atWars = Kingdom.All.Where(a => a != faction && a.IsAtWarWith(faction)).Count();
             var atWars2 = Kingdom.All.Where(a => a != faction2 && a.IsAtWarWith(faction2)).Count();
 
             var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
-            if (atWars > 2 || atWars2 > 2 || AtTruce(faction, faction2))
+            if (atWars > 2 || atWars2 > 2 || (checkTruce && AtTruce(faction, faction2)))
             {
                 return false;
             }

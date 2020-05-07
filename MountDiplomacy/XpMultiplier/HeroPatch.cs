@@ -7,12 +7,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.SandBox.GameComponents;
+using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterDeveloper;
 using TaleWorlds.Core;
 
 namespace Wang
 {
+    [HarmonyPatch(typeof(DefaultCharacterDevelopmentModel), "CalculateLearningRate", new Type[] { typeof(Hero), typeof(SkillObject), typeof(StatExplainer) })]
+    public class HeroXPRatePatch
+    {
+        public static void Postfix(ref float __result, Hero hero, SkillObject skill, StatExplainer explainer = null)
+        {
+            if (hero == Hero.MainHero && XpMultiplierConfig.PlayerEnabled)
+            {
+                __result *= XpMultiplierConfig.PlayerMultipier;
+            }
+            else if (hero.Clan == Hero.MainHero.Clan && XpMultiplierConfig.PlayerEnabled)
+            {
+                __result *= XpMultiplierConfig.TeammateMultipier;
+            }
+        }
+    }
 
-    [HarmonyPatch(typeof(Hero), "AddSkillXp")]
+    // [HarmonyPatch(typeof(Hero), "AddSkillXp")]
     public class HeroPatch
     {
         public static void Prefix(Hero __instance, SkillObject skill, float xpAmount)
@@ -32,10 +49,7 @@ namespace Wang
                 //
                 __instance.HeroDeveloper.AddSkillXp(skill, xpAmount);
             }
-
         }
-
-
 
     }
 }

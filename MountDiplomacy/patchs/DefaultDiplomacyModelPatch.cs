@@ -39,7 +39,7 @@ namespace Wang
                 num11 = 2000f * (float)(20.0 - Math.Sqrt(Math.Min(400.0, toDays)));
             }
 
-            int num12 = 40000 + ((clan.Fortifications != null) ? clan.Fortifications.Count() : 0) * 20000;
+            int num12 = 40000 + ((clan.Fortifications != null) ? clan.Fortifications.Count : 0) * 20000;
 
             __result += (0f - num11) * (num * num2);
 

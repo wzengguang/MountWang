@@ -37,6 +37,11 @@ namespace Wang
             {
                 __instance.SmeltableItemList.Remove(item);
             }
+
+            if (__instance.SmeltableItemList.Count == 0)
+            {
+                __instance.CurrentSelectedItem = null;
+            }
         }
     }
 }

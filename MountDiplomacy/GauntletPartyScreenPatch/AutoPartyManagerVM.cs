@@ -94,7 +94,7 @@ namespace Wang
 
         public void ExecuteRecruitAll()
         {
-            InformationManager.DisplayMessage(new InformationMessage("ExecuteRecruitAll"));
+            // InformationManager.DisplayMessage(new InformationMessage("ExecuteRecruitAll"));
             _partyVM.ExecuteRecruitAll();
 
         }

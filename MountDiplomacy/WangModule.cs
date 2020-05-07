@@ -4,6 +4,7 @@ using SandBox.GauntletUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
@@ -60,9 +61,7 @@ namespace Wang
             }
             catch (Exception e)
             {
-
-                FileLog.Log(e.StackTrace);
-                throw (e);
+                //FileLog.Log(e.StackTrace);
             }
         }
 
@@ -77,6 +76,11 @@ namespace Wang
                 AddBehaviour(gameStarterObject as CampaignGameStarter);
             }
             Help.Original = null;
+        }
+
+        public override void OnGameLoaded(Game game, object initializerObject)
+        {
+            base.OnGameLoaded(game, initializerObject);
         }
 
         private void AddBehaviour(CampaignGameStarter gameStarterObject)
@@ -102,10 +106,6 @@ namespace Wang
                 {
                     list[i] = new CustomSettlementMilitiaModel();
                 }
-                if (list[i] is SettlementGarrisonModel)
-                {
-                    list[i] = new CustomSettlementGarrisonModel();
-                }
             }
         }
 
@@ -113,9 +113,19 @@ namespace Wang
         public override void OnGameInitializationFinished(Game game)
         {
             base.OnGameInitializationFinished(game);
-            //  Campaign.Current.CampaignBehaviorManager.AddBehavior(new CustomPoliticalStagnationAndBorderIncidentCampaignBehavior());
-            //CampaignEvents.RemoveListeners(Campaign.Current.GetCampaignBehavior<BanditsCampaignBehavior>());
-            //Campaign.Current.CampaignBehaviorManager.RemoveBehavior<BanditsCampaignBehavior>();
+
+            _ = DelayedWork();
+
+        }
+
+        /// <summary>
+        /// Fuck,竟然要等待一会。
+        /// </summary>
+        /// <returns></returns>
+        private async Task DelayedWork()
+        {
+            await Task.Delay(8000).ConfigureAwait(false);
+            Campaign.Current.CampaignBehaviorManager.GetBehavior<HeroLearningSkillBehaviour>().RefreshHeroFormationOnGameLoaded();
         }
 
 
@@ -138,10 +148,12 @@ namespace Wang
         {
             if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.Home.IsPressed())
             {
+
                 string text = "";
                 int num = 0;
                 foreach (Kingdom item in Kingdom.All)
                 {
+
                     if (item != null)
                     {
                         num++;

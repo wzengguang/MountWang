@@ -18,7 +18,7 @@ namespace Wang
         [HarmonyPatch("ConsiderWar")]
         public static bool ConsiderWar(IFaction mapFaction, IFaction otherMapFaction)
         {
-            if (!mapFaction.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(mapFaction, otherMapFaction, true))
+            if (!mapFaction.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(mapFaction, otherMapFaction, true, true))
             {
                 return false;
             }
