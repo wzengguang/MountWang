@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
+using TaleWorlds.Core;
 
 namespace Vampire
 {
@@ -42,7 +43,19 @@ namespace Vampire
             ____companionTemplates = ____companionTemplates.Where((CharacterObject x) => TraitHelper.trait(x)).ToList();
         }
 
-  
+        [HarmonyPrefix]
+        [HarmonyPatch("CreateCompanion")]
+        private static bool CreateCompanion(CharacterObject companionTemplate)
+        {
+            if (Clan.PlayerClan.Companions != null)
+            {
+                if (MBRandom.RandomFloat < 1f / Clan.PlayerClan.Companions.Count())
+                {
+                    return true;
+                }
 
+            }
+            return false;
+        }
     }
 }

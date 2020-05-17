@@ -87,7 +87,7 @@ namespace EnhanceLordTroop
                 playerSettlementCount = Hero.MainHero.MapFaction.Settlements.Where(a => a.IsTown || a.IsCastle).Count();
             }
 
-            var scale = Math.Max(0.2f, Math.Min(1, playerSettlementCount * 5 / Town.All.Count));
+            var scale = Math.Max(0.2f, Math.Min(1, playerSettlementCount * 5 / Town.AllTowns.Count));
 
             for (int i = 0; i < _troopScale.Length; i++)
             {

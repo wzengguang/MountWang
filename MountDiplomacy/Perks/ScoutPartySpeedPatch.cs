@@ -32,28 +32,36 @@ namespace Wang.Perks
                 case TerrainType.Forest:
                     if (leader.GetPerkValue(DefaultPerks.Scouting.ForestLore))
                     {
-                        bonuses.AddFactor(baseSpeed * 0.05f, DefaultPerks.Scouting.ForestLore.Name);
+                        bonuses.AddFactor(0.05f, DefaultPerks.Scouting.ForestLore.Name);
                     }
                     break;
                 case TerrainType.Desert:
                     if (leader.GetPerkValue(DefaultPerks.Scouting.DesertLore))
                     {
-                        bonuses.AddFactor(baseSpeed * 0.05f, DefaultPerks.Scouting.DesertLore.Name);
+                        bonuses.AddFactor(0.05f, DefaultPerks.Scouting.DesertLore.Name);
                     }
                     break;
                 case TerrainType.Mountain:
                     if (leader.GetPerkValue(DefaultPerks.Scouting.HillsLore))
                     {
-                        bonuses.AddFactor(baseSpeed * 0.05f, DefaultPerks.Scouting.HillsLore.Name);
+                        bonuses.AddFactor(0.05f, DefaultPerks.Scouting.HillsLore.Name);
                     }
 
                     break;
                 case TerrainType.Swamp:
                     if (leader.GetPerkValue(DefaultPerks.Scouting.MarshesLore))
                     {
-                        bonuses.AddFactor(baseSpeed * 0.05f, DefaultPerks.Scouting.MarshesLore.Name);
+                        bonuses.AddFactor(0.05f, DefaultPerks.Scouting.MarshesLore.Name);
                     }
 
+                    break;
+
+                case TerrainType.Steppe:
+                    var scoutingGrasslandNavigator = PerkObject.FindFirst(a => a.Name.GetID() == "Ekqj9IFR");
+                    if (scoutingGrasslandNavigator != null && leader.GetPerkValue(scoutingGrasslandNavigator))
+                    {
+                        bonuses.AddFactor(0.05f, scoutingGrasslandNavigator.Name);
+                    }
                     break;
                 case TerrainType.Water:
                 case TerrainType.Bridge:
@@ -68,31 +76,26 @@ namespace Wang.Perks
             {
                 if (leader.GetPerkValue(DefaultPerks.Scouting.Pathfinder) || (mobileParty.Scout != null && mobileParty.Scout.GetPerkValue(DefaultPerks.Scouting.Pathfinder)))
                 {
-                    bonuses.AddFactor(baseSpeed * 0.01f, DefaultPerks.Scouting.Pathfinder.Name);
+                    bonuses.AddFactor(0.01f, DefaultPerks.Scouting.Pathfinder.Name);
                 }
             }
             else
             {
                 if (leader.GetPerkValue(DefaultPerks.Scouting.TorchCarriers) || (mobileParty.Scout != null && mobileParty.Scout.GetPerkValue(DefaultPerks.Scouting.TorchCarriers)))
                 {
-                    bonuses.AddFactor(baseSpeed * 0.02f, DefaultPerks.Scouting.TorchCarriers.Name);
+                    bonuses.AddFactor(0.02f, DefaultPerks.Scouting.TorchCarriers.Name);
                 }
             }
             //2
             if (leader.GetPerkValue(DefaultPerks.Scouting.Navigator) || (mobileParty.Scout != null && mobileParty.Scout.GetPerkValue(DefaultPerks.Scouting.Navigator)))
             {
-                bonuses.AddFactor(baseSpeed * 0.01f, DefaultPerks.Scouting.Navigator.Name);
+                bonuses.AddFactor(0.01f, DefaultPerks.Scouting.Navigator.Name);
             }
 
-            var scoutingGrasslandNavigator = PerkObject.FindFirst(a => a.Name.GetID() == "Ekqj9IFR");
-            if (scoutingGrasslandNavigator != null && leader.GetPerkValue(scoutingGrasslandNavigator))
-            {
-                bonuses.AddFactor(baseSpeed * 0.05f, scoutingGrasslandNavigator.Name);
-            }
             var ScoutingExtra2 = PerkObject.FindFirst(a => a.Name.GetID() == "P68GX3zY");//{=P68GX3zY}Lay of the land", "{=RchM1puc} Extra 3% movement speed on map.
             if (ScoutingExtra2 != null && leader.GetPerkValue(ScoutingExtra2))
             {
-                bonuses.AddFactor(baseSpeed * 0.03f, ScoutingExtra2.Name);
+                bonuses.AddFactor(0.03f, ScoutingExtra2.Name);
             }
             bonuses.LimitMin(1f);
             __result = bonuses.ResultNumber;

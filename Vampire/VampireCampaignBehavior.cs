@@ -26,7 +26,7 @@ namespace Vampire
             bool flag = obj.CombatType == Mission.MissionCombatType.Combat;
             bool flag2 = obj.IsFieldBattle;
 
-            if (flag && flag2 && Mission.Current.Scene != null)
+            if (flag && Mission.Current.Scene != null)
             {
                 Mission.Current.AddMissionBehaviour(new VampireMissionLogic());
             }

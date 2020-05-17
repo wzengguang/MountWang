@@ -21,29 +21,25 @@ namespace Wang
             {
                 var time = (CampaignTime.Now - hero.CaptivityStartTime).ToDays;
 
-                float num = (float)(time * time / PrisonerEscapeConfig.BaseLine);
+                float num = Math.Min((float)(time * time / PrisonerEscapeConfig.BaseLine), 0.075f);
 
                 if (hero.PartyBelongedToAsPrisoner.IsMobile)
                 {
                     num *= 6f - (float)Math.Pow(Math.Min(81, hero.PartyBelongedToAsPrisoner.NumberOfHealthyMembers), 0.25);
 
-                    if (!hero.PartyBelongedToAsPrisoner.MapFaction.Culture.CanHaveSettlement || hero.PartyBelongedToAsPrisoner.MapFaction.IsBanditFaction)
+                    if (hero.PartyBelongedToAsPrisoner.MapFaction.IsBanditFaction)
                     {
                         num *= 100f;
                     }
                 }
-                else if (hero.PartyBelongedToAsPrisoner.Settlement != null && hero.PartyBelongedToAsPrisoner.Settlement.IsTown)
+                if (hero.PartyBelongedToAsPrisoner == PartyBase.MainParty || (hero.PartyBelongedToAsPrisoner.IsSettlement && hero.PartyBelongedToAsPrisoner.Settlement.OwnerClan == Clan.PlayerClan))
                 {
-                    num = num > 0.1f ? 0.1f : num;
+                    num *= (hero.PartyBelongedToAsPrisoner.IsSettlement ? 0.5f : 0.33f);
                 }
 
-                if (hero.PartyBelongedToAsPrisoner == PartyBase.MainParty)
-                {
-                    num *= 0.33f;
-                }
                 if (MBRandom.RandomFloat < num)
                 {
-                    EndCaptivityAction.ApplyByEscape(hero);
+                    EndCaptivityAction.ApplyByEscape(hero, null);
                 }
             }
             return false;

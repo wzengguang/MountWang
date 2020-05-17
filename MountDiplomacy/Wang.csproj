@@ -44,6 +44,7 @@
       <HintPath>..\packages\Lib.Harmony.2.0.0.9\lib\net45\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="SandBox">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
       <Private>False</Private>
@@ -59,6 +60,18 @@
     <Reference Include="SandBox.ViewModelCollection">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.ViewModelCollection.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="StoryMode">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.dll</HintPath>
+    </Reference>
+    <Reference Include="StoryMode.GauntletUI">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.GauntletUI.dll</HintPath>
+    </Reference>
+    <Reference Include="StoryMode.View">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.View.dll</HintPath>
+    </Reference>
+    <Reference Include="StoryMode.ViewModelCollection">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.ViewModelCollection.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -252,20 +265,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameComponents\WangDefaultTroopSacrificeModel.cs" />
+    <Compile Include="GameComponents\WangSettlementFoodModel.cs" />
+    <Compile Include="GameComponents\WangSettlementProsperityModel.cs" />
     <Compile Include="GauntletPartyScreenPatch\PartyVMPatch.cs" />
-    <Compile Include="GauntletUI\InformationVM.cs" />
+    <Compile Include="GauntletUI\Canvass\CanvassBehavior.cs" />
+    <Compile Include="GauntletUI\Canvass\CanvassKingdomClanItemVM.cs" />
+    <Compile Include="GauntletUI\Canvass\CanvassKingdomClanSortControllerVM.cs" />
+    <Compile Include="patchs\CharacterRelationCampaignBehaviorPatch.cs" />
+    <Compile Include="patchs\DefaultPartySizeLimitModelPatch.cs" />
+    <Compile Include="patchs\FirstPhaseCampaignBehaviorPatch.cs" />
+    <Compile Include="Saveable\CanvassSave.cs" />
+    <Compile Include="Saveable\CompanionHeroSave.cs" />
+    <Compile Include="Saveable\CustomSaveDefiner.cs" />
+    <Compile Include="GauntletUI\Canvass\CanvassVM.cs" />
+    <Compile Include="GauntletUI\Canvass\CompanionSelectorItemVM.cs" />
     <Compile Include="patchs\AttributePerLevelPatch.cs" />
     <Compile Include="BanditsCampaignBehavior\CustomBanditDensityModel.cs" />
-    <Compile Include="BanditsCampaignBehavior\BanditsCampaignBehaviorPatch.cs" />
     <Compile Include="BanditsCampaignBehavior\BanditConfig.cs" />
+    <Compile Include="patchs\DefaultClanFinanceModelPatch.cs" />
     <Compile Include="patchs\EndCaptivityActionPatch.cs" />
     <Compile Include="patchs\PregnancyCampaignBehaviorPatch.cs" />
-    <Compile Include="CustomSettlementMilitiaModel\CustomSettlementGarrisonModel.cs" />
-    <Compile Include="CustomSettlementMilitiaModel\CustomSettlementMilitiaModel.cs" />
-    <Compile Include="CustomSettlementMilitiaModel\TroopCountLimitConfig.cs" />
+    <Compile Include="GameComponents\WangSettlementGarrisonModel.cs" />
+    <Compile Include="GameComponents\WangSettlementMilitiaModel.cs" />
+    <Compile Include="GameComponents\TroopCountLimitConfig.cs" />
     <Compile Include="Perks\AgentAndItemMenuVMPatch.cs" />
     <Compile Include="patchs\DefaultClanModelPatch.cs" />
-    <Compile Include="DefaultTroopCountLimitModelPatch\DefaultTroopCountLimitModelPatch.cs" />
+    <Compile Include="patchs\DefaultTroopCountLimitModelPatch.cs" />
     <Compile Include="GauntletPartyScreenPatch\AutoPartyManagerVM.cs" />
     <Compile Include="GauntletPartyScreenPatch\OrderTroopSelectorItemVM.cs" />
     <Compile Include="GauntletUI\GauntletWangScreen.cs" />
@@ -286,10 +312,10 @@
     <Compile Include="PrisonerEscapeCampaignBehaviorPatch\PrisonerEscapeConfig.cs" />
     <Compile Include="GauntletPartyScreenPatch\GauntletPartyScreenPatch.cs" />
     <Compile Include="GauntletPartyScreenPatch\PartyVMExtension.cs" />
-    <Compile Include="DefaultTroopCountLimitModelPatch\TroopCountLimitConfig.cs" />
     <Compile Include="GauntletUI\LearningSKill\SkillLearningSelectorItemVM.cs" />
     <Compile Include="patchs\TournamentGamePatch.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="__abandoned\PartyScreenLogicPatch\PartyScreenLogicPatch.cs" />
     <Compile Include="__abandoned\PartyScreenLogicPatch\SortPartyHelpers.cs" />
     <Compile Include="__abandoned\PartyScreenLogicPatch\SortPartyConfig.cs" />
@@ -298,12 +324,12 @@
     <Compile Include="PrisonerRecruitmentCalculationModel\PrisonerRecruitmentCalculationModelPatch.cs" />
     <Compile Include="PrisonerRecruitmentCalculationModel\CustomTownRecruitPrisonersCampaignBehavior.cs" />
     <Compile Include="PrisonerRecruitmentCalculationModel\RecruitConfig.cs" />
-    <Compile Include="SiegeEventModel\SiegeEventModelPatch.cs" />
-    <Compile Include="SiegeEventModel\SiegeConfig.cs" />
+    <Compile Include="__abandoned\SiegeEventModel\SiegeEventModelPatch.cs" />
+    <Compile Include="__abandoned\SiegeEventModel\SiegeConfig.cs" />
     <Compile Include="patchs\SmeltingVMPatch.cs" />
     <Compile Include="WangModule.cs" />
     <Compile Include="DeclareWar\PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch.cs" />
-    <Compile Include="patchs\WorkshopsRelatedPatch.cs" />
+    <Compile Include="patchs\WorkshopsCampaignBehaviorPatch.cs" />
     <Compile Include="XpMultiplier\MobilePartyPatch.cs" />
     <Compile Include="GauntletUI\LearningSKill\HeroLearningSkillBehaviour.cs" />
     <Compile Include="XpMultiplier\XpMultiplierConfig.cs" />

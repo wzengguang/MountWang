@@ -44,17 +44,17 @@ namespace Wang.Perks
             }
             else if (rightHandEquippedItem.RelevantSkill == DefaultSkills.TwoHanded)
             {
-                PerkObject perkObject = rightHandEquippedItem.ThrustSpeed < 85 ? DefaultPerks.TwoHanded.PowerBasher : (rightHandEquippedItem.ThrustSpeed > 100 ? DefaultPerks.TwoHanded.SpeedBasher : null);
-                if (perkObject != null)
-                {
-                    agentDrivenProperties.ThrustOrRangedReadySpeedMultiplier *= 1 + perkObject.SecondaryBonus / 100f;
-                }
+                //PerkObject perkObject = rightHandEquippedItem.ThrustSpeed < 85 ? DefaultPerks.TwoHanded.PowerBasher : (rightHandEquippedItem.ThrustSpeed > 100 ? DefaultPerks.TwoHanded.SpeedBasher : null);
+                //if (perkObject != null)
+                //{
+                //    agentDrivenProperties.ThrustOrRangedReadySpeedMultiplier *= 1 + perkObject.SecondaryBonus / 100f;
+                //}
 
-                PerkObject swingPerk = rightHandEquippedItem.SwingSpeed < 85 ? DefaultPerks.TwoHanded.PowerBasher : (rightHandEquippedItem.SwingSpeed > 100 ? DefaultPerks.TwoHanded.SpeedBasher : null);
-                if (swingPerk != null)
-                {
-                    agentDrivenProperties.SwingSpeedMultiplier *= 1 + swingPerk.SecondaryBonus / 100f;
-                }
+                //PerkObject swingPerk = rightHandEquippedItem.SwingSpeed < 85 ? DefaultPerks.TwoHanded.PowerBasher : (rightHandEquippedItem.SwingSpeed > 100 ? DefaultPerks.TwoHanded.SpeedBasher : null);
+                //if (swingPerk != null)
+                //{
+                //    agentDrivenProperties.SwingSpeedMultiplier *= 1 + swingPerk.SecondaryBonus / 100f;
+                //}
 
                 //双手大于100效果。
                 var bonus = (characterObject.GetSkillValue(DefaultSkills.TwoHanded) - 200) * 0.2f;

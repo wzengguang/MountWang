@@ -4,7 +4,9 @@ using SandBox.GauntletUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
@@ -16,14 +18,15 @@ using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using Wang.GameComponents;
 using Wang.GauntletUI;
+using Wang.GauntletUI.Canvass;
 
 namespace Wang
 {
     public class WangModule : MBSubModuleBase
     {
         private static string FILE_NAME = BasePath.Name + "Modules/Wang/ModuleData/config.xml";
-
 
         public void InitConfig()
         {
@@ -43,7 +46,6 @@ namespace Wang
                 RecruitConfig.Init(xmlDocument);
                 PrisonerEscapeConfig.Init(xmlDocument);
                 SettlementMillitiaConfig.Init(xmlDocument);
-                TroopCountLimitConfig.Init(xmlDocument);
                 BanditConfig.Init(xmlDocument);
             }
         }
@@ -51,21 +53,25 @@ namespace Wang
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-            InitConfig();
-            Harmony.DEBUG = false;
-            FileLog.Reset();
-            Harmony harmony = new Harmony("mod.bannerlord.wang");
             try
             {
+                InitConfig();
+                // Harmony.DEBUG = true;
+                Harmony harmony = new Harmony("mod.bannerlord.wang");
+                FileLog.Reset();
                 harmony.PatchAll();
             }
             catch (Exception e)
             {
-                //FileLog.Log(e.StackTrace);
+                MessageBox.Show("Couldn't apply Harmony due to: " + e.FlattenException());
+                // FileLog.Log(e.StackTrace);
             }
         }
 
-
+        public override void OnNewGameCreated(Game game, object initializerObject)
+        {
+            base.OnNewGameCreated(game, initializerObject);
+        }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             base.OnGameStart(game, gameStarterObject);
@@ -81,6 +87,7 @@ namespace Wang
         public override void OnGameLoaded(Game game, object initializerObject)
         {
             base.OnGameLoaded(game, initializerObject);
+
         }
 
         private void AddBehaviour(CampaignGameStarter gameStarterObject)
@@ -89,8 +96,8 @@ namespace Wang
             //  gameStarterObject.AddBehavior(new CustomBanditsCampaignBehavior());//会自动覆盖原来的。
             gameStarterObject.AddBehavior(new CustomTownRecruitPrisonersCampaignBehavior());
             gameStarterObject.AddBehavior(new AddXpToLordTroopBehaviour());
+            gameStarterObject.AddBehavior(new CanvassBehavior());
         }
-
 
         private void ReplaceGameModel(CampaignGameStarter starter)
         {
@@ -104,11 +111,28 @@ namespace Wang
 
                 if (list[i] is DefaultSettlementMilitiaModel)
                 {
-                    list[i] = new CustomSettlementMilitiaModel();
+                    list[i] = new WangSettlementMilitiaModel();
+                }
+                //if (list[i] is SettlementGarrisonModel)
+                //{
+                //    list[i] = new CustomSettlementGarrisonModel();
+                //}
+
+                if (list[i] is DefaultSettlementFoodModel)
+                {
+                    list[i] = new WangSettlementFoodModel();
+                }
+
+                if (list[i] is DefaultSettlementProsperityModel)
+                {
+                    list[i] = new WangSettlementProsperityModel();
+                }
+                if (list[i] is DefaultTroopSacrificeModel)
+                {
+                    list[i] = new WangDefaultTroopSacrificeModel();
                 }
             }
         }
-
 
         public override void OnGameInitializationFinished(Game game)
         {
@@ -128,16 +152,14 @@ namespace Wang
             Campaign.Current.CampaignBehaviorManager.GetBehavior<HeroLearningSkillBehaviour>().RefreshHeroFormationOnGameLoaded();
         }
 
-
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
             ShowWar();
 
-            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.M.IsPressed() && !GauntletWangScreen.Show)
+            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.Home.IsPressed() && !GauntletWangScreen.Show)
             {
                 ScreenManager.PushScreen(new GauntletWangScreen());
-
             }
         }
 
@@ -146,9 +168,10 @@ namespace Wang
         /// </summary>
         private void ShowWar()
         {
-            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.Home.IsPressed())
-            {
+            StringBuilder stringBuilder = new StringBuilder();
 
+            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.End.IsPressed())
+            {
                 string text = "";
                 int num = 0;
                 foreach (Kingdom item in Kingdom.All)

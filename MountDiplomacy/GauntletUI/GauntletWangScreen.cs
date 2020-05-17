@@ -27,7 +27,7 @@ namespace Wang.GauntletUI
 
         private SpriteCategory _clanCategory;
 
-
+        private SpriteCategory _kingdomCategory;
         public GauntletWangScreen()
         {
             Show = true;
@@ -61,6 +61,9 @@ namespace Wang.GauntletUI
             ResourceDepot uIResourceDepot = UIResourceManager.UIResourceDepot;
             _clanCategory = spriteData.SpriteCategories["ui_clan"];
             _clanCategory.Load(resourceContext, uIResourceDepot);
+            this._kingdomCategory = spriteData.SpriteCategories["ui_kingdom"];
+            this._kingdomCategory.Load(resourceContext, uIResourceDepot);
+
             _gauntletLayer = new GauntletLayer(1);
             _gauntletLayer.InputRestrictions.SetInputRestrictions();
             _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericCampaignPanelsGameKeyCategory"));
@@ -82,6 +85,7 @@ namespace Wang.GauntletUI
             ScreenManager.TryLoseFocus(_gauntletLayer);
             //Game.Current.EventManager.TriggerEvent(new TutorialContextChangedEvent(TutorialContexts.None));
             _clanCategory.Unload();
+            _kingdomCategory.Unload();
             _dataSource = null;
             _gauntletLayer = null;
         }

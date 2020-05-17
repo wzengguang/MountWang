@@ -14,3 +14,9 @@ dotnet_diagnostic.CA1822.severity = suggestion
 
 # CA1052: 静态容器类型应为 Static 或 NotInheritable
 dotnet_diagnostic.CA1052.severity = silent
+
+# CA2227: 集合属性应为只读
+dotnet_diagnostic.CA2227.severity = silent
+
+# IDE0040: 添加可访问性修饰符
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:silent

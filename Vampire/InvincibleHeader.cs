@@ -13,10 +13,11 @@ using static TaleWorlds.MountAndBlade.Mission;
 
 namespace Vampire
 {
-
-    [HarmonyPatch(typeof(SandboxAgentStatCalculateModel), "UpdateHumanStats")]
+    [HarmonyPatch]
     public class InvincibleHeader
     {
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SandboxAgentStatCalculateModel), "UpdateHumanStats")]
         private static void Postfix(Agent agent, AgentDrivenProperties agentDrivenProperties)
         {
 
@@ -24,7 +25,20 @@ namespace Vampire
             {
                 Equipment spawnEquipment = agent.SpawnEquipment;
                 agentDrivenProperties.ArmorHead = spawnEquipment.GetHeadArmorSum() + 99;
+
             }
         }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(SandboxAgentStatCalculateModel), "UpdateHorseStats")]
+        private static void UpdateHorseStats(Agent agent, AgentDrivenProperties agentDrivenProperties)
+        {
+            if (agent.RiderAgent != null && agent.RiderAgent.IsHero)
+            {
+                var riding = (agent.RiderAgent.Character as CharacterObject).GetSkillValue(DefaultSkills.Riding);
+
+                agentDrivenProperties.ArmorTorso *= 1f + (float)Math.Sqrt(riding / 100f);
+            }
+        }
+
     }
 }

@@ -5,17 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using Wang.Saveable;
 
 namespace Wang
 {
     public class HeroLearningSkillBehaviour : CampaignBehaviorBase
     {
-
-        private List<Hero> heroes = new List<Hero>();
-        private List<SkillObject> LearningSkills = new List<SkillObject>();
-        private List<int> washPerkTime = new List<int>();
-
-        private List<int> heroFormation = new List<int>();
+        private List<CompanionHeroSave> _companionHeroSaves = new List<CompanionHeroSave>();
 
         public override void RegisterEvents()
         {
@@ -24,103 +20,85 @@ namespace Wang
 
         public void RefreshHeroFormationOnGameLoaded()
         {
-            if (heroFormation.Count < heroes.Count)
+            foreach (var item in _companionHeroSaves)
             {
-                heroFormation.AddRange(new int[heroes.Count - heroFormation.Count]);
-            }
-
-            for (int i = 0; i < heroes.Count; i++)
-            {
-                heroes[i].CharacterObject.CurrentFormationClass = (FormationClass)heroFormation[i];
+                item.Hero.CharacterObject.CurrentFormationClass = (FormationClass)item.Formation;
             }
         }
 
         public override void SyncData(IDataStore dataStore)
         {
-            dataStore.SyncData("LearningSkillHero", ref heroes);
-            dataStore.SyncData("LearningSkills", ref LearningSkills);
-            dataStore.SyncData("washPerkTime", ref washPerkTime);
-            dataStore.SyncData("heroFormation", ref heroFormation);
+            dataStore.SyncData("WangCcompanionHeroSaves", ref _companionHeroSaves);
         }
 
         public void SetHeroFormation(Hero hero, int formation)
         {
-            if (heroFormation.Count < heroes.Count)
+            var find = _companionHeroSaves.FirstOrDefault(a => a.Hero == hero);
+            if (find == null)
             {
-                heroFormation.AddRange(new int[heroes.Count - heroFormation.Count]);
+                AddNew(hero, formation: formation);
             }
-            var index = heroes.FindIndex(a => a == hero);
-            if (index > -1)
+            else
             {
-                heroFormation[index] = formation;
+                find.Formation = formation;
             }
-
-            AddNew(hero, formation: formation);
         }
 
         private void AddNew(Hero hero, SkillObject skill = null, int formation = 0, int perkTime = 0)
         {
-            heroes.Add(hero);
-            LearningSkills.Add(null);
-            washPerkTime.Add(perkTime);
-            heroFormation.Add(formation);
+            _companionHeroSaves.Add(new CompanionHeroSave
+            {
+                Hero = hero,
+                SkillObject = skill,
+                Formation = formation,
+                WashPerkTime = perkTime
+            });
         }
 
         public int GetWishPerkTime(Hero hero)
         {
-            //兼容旧档？
-            if (washPerkTime.Count < heroes.Count)
+            var find = _companionHeroSaves.FirstOrDefault(a => a.Hero == hero);
+            if (find == null)
             {
-                washPerkTime.AddRange(new int[heroes.Count - washPerkTime.Count]);
+                return 0;
             }
-
-            var index = heroes.FindIndex(a => a == hero);
-            if (index > -1)
-            {
-                return washPerkTime[index];
-            }
-            return 0;
+            return find.WashPerkTime;
         }
 
         public int SetWishPerkTime(Hero hero)
         {
-            var index = heroes.FindIndex(a => a == hero);
-            if (index > -1)
+            var find = _companionHeroSaves.FirstOrDefault(a => a.Hero == hero);
+            if (find == null)
             {
-                washPerkTime[index]++;
-                return washPerkTime[index];
+                AddNew(hero, perkTime: 1);
+                return 1;
             }
-
-            AddNew(hero, perkTime: 1);
-            return 1;
+            return ++find.WashPerkTime;
         }
         public void SetHeroLearningSkill(Hero hero, SkillObject skill)
         {
-            var index = heroes.FindIndex(a => a == hero);
-            if (index > -1)
+
+            var find = _companionHeroSaves.FirstOrDefault(a => a.Hero == hero);
+            if (find == null)
             {
-                LearningSkills[index] = skill;
+                AddNew(hero, skill);
             }
             else
             {
-                AddNew(hero, skill);
+                find.SkillObject = skill;
             }
         }
 
         public SkillObject getHeroLearningSkill(Hero hero)
         {
-            var index = heroes.FindIndex(a => a == hero);
-            if (index > -1)
-            {
-                return LearningSkills[index];
-            }
-            return null;
-        }
+            var find = _companionHeroSaves.FirstOrDefault(a => a.Hero == hero);
 
+            return find?.SkillObject;
+        }
 
         private void DailyTick()
         {
-            if (this.heroes.Count == 0 || XpMultiplierConfig.LearningXPMultipier < 1 || XpMultiplierConfig.LearningXPMultipier == 0)
+            if (this._companionHeroSaves.Count == 0 || XpMultiplierConfig.LearningXPMultipier < 1 || XpMultiplierConfig.LearningXPMultipier == 0)
             {
                 return;
             }
@@ -184,16 +162,8 @@ namespace Wang
 
                     xp /= (Math.Max(30, companionSkillValue) / 30);
 
-                    //InformationManager.DisplayMessage(new InformationMessage(baseXp.ToString() + ":" + xp.ToString()));
-
-                    if (learningSkill == DefaultSkills.Trade)
-                    {
-                        xp *= 10;
-                    }
-
                     //xp += companionSkillValue;
                     hero.AddSkillXp(learningSkill, (float)xp);
-                    //HeroPatch.Prefix(hero, learningSkill, (float)xp);
                 }
             }
         }

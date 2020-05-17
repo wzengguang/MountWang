@@ -12,6 +12,13 @@ namespace Wang
 {
     public static class Help
     {
+
+        public static bool IsPlayerCraft(this ItemObject item)
+        {
+            return item.Name.ToString().Contains("*");
+        }
+
+
         /// <summary>
         /// 必须在OnGame start 初始化该值为null。
         /// </summary>
@@ -132,6 +139,11 @@ namespace Wang
 
             foreach (IFaction item in kingdoms)
             {
+                if (item == kingdom)
+                {
+                    continue;
+                }
+
                 float num6 = 1000f;
                 foreach (Settlement settlement in item.Settlements.Where(a => a.IsTown || a.IsCastle))
                 {
@@ -195,7 +207,7 @@ namespace Wang
             var atWars2 = Kingdom.All.Where(a => a != faction2 && a.IsAtWarWith(faction2)).Count();
 
             var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
-            if (atWars > 2 || atWars2 > 2 || (checkTruce && AtTruce(faction, faction2)))
+            if (atWars > 1 || atWars2 > 2 || (checkTruce && AtTruce(faction, faction2)))
             {
                 return false;
             }

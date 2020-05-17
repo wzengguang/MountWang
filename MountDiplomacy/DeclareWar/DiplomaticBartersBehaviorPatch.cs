@@ -16,14 +16,28 @@ namespace Wang
     {
         [HarmonyPrefix]
         [HarmonyPatch("ConsiderWar")]
-        public static bool ConsiderWar(IFaction mapFaction, IFaction otherMapFaction)
+        public static bool ConsiderWar(Clan clan, IFaction otherMapFaction)
         {
-            if (!mapFaction.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(mapFaction, otherMapFaction, true, true))
+
+            if (!clan.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(clan, otherMapFaction, true, true))
             {
                 return false;
             }
 
             return true;
+        }
+
+
+        [HarmonyPrefix]
+        [HarmonyPatch("ConsiderDefection")]
+        private static bool ConsiderDefection(Clan clan1, Kingdom kingdom)
+        {
+            if (clan1.Kingdom.Leader == Hero.MainHero)
+            {
+                return true;
+            }
+
+            return !Settings.DisableClanJumpBetweenKingdom;
         }
     }
 }

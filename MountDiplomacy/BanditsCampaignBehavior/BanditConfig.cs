@@ -18,8 +18,6 @@ namespace Wang
         public static int NumberOfMaximumHideoutsAtEachBanditFaction { get; set; } = 10;
         public static int NumberOfInitialHideoutsAtEachBanditFaction { get; set; } = 3;
 
-        public static int BanditMultiple { get; set; } = 1;
-
         public static void Init(XmlDocument xmlDocument)
         {
             XmlNode xmlNode = xmlDocument.SelectSingleNode("Config").SelectSingleNode("Bandit");
@@ -30,7 +28,6 @@ namespace Wang
             NumberOfMaximumBanditPartiesAroundEachHideout = int.Parse(xmlNode.SelectSingleNode("NumberOfMaximumBanditPartiesAroundEachHideout").InnerText);
             NumberOfMaximumHideoutsAtEachBanditFaction = int.Parse(xmlNode.SelectSingleNode("NumberOfMaximumHideoutsAtEachBanditFaction").InnerText);
             NumberOfInitialHideoutsAtEachBanditFaction = int.Parse(xmlNode.SelectSingleNode("NumberOfInitialHideoutsAtEachBanditFaction").InnerText);
-            BanditMultiple = int.Parse(xmlNode.SelectSingleNode("BanditMultiple").InnerText);
 
         }
     }
