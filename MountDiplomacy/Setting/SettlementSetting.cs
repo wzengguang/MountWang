@@ -21,8 +21,8 @@ namespace Wang.Setting
         public bool ProsperityEnabled { get; set; } = true;
 
 
-        [SettingNumeric("{=setting_settlement_prosperity_boost}boost Prosperity Growth Factor", "{=setting_settlement_prosperity_boost_desc}Description: When food enough, boost prosperity growth, the prosperity is more lower, the result effect is more power. Set 0 to disabled this function.", 0, 0, 20)]
-        public float boostProsperityGrowth { get; set; } = 10;
+        [SettingNumeric("{=setting_settlement_prosperity_boost}boost Prosperity Growth Multiple", "{=setting_settlement_prosperity_boost_desc}Description: When food enough, boost prosperity growth, Add the value Multiple. set 0 to disable this function", 0, 0, 20)]
+        public float boostProsperityGrowth { get; set; } = 0f;
 
 
         [SettingBoolean("{=setting_settlement_sacrifice_is_enabled}Enable Settlement Sacrifice Tweak", "{=setting_settlement_sacrifice_desc}Description: Break in a besieged settmentment without sacrificing troop.  Change it need to restart game.", true)]
@@ -34,7 +34,7 @@ namespace Wang.Setting
 
 
         [SettingNumeric("{=setting_settlement_town_capital_factor}TownCapitalFactor", "{=setting_settlement_town_capital_factor_desc}Description: Town has more capital. The value means add how many multiple of vanilla. Set 0 to disable this function.", 0f, 0f, 10)]
-        public float TownCapitalFactor { get; set; } = 1f;
+        public float TownCapitalFactor { get; set; } = 0f;
 
 
 

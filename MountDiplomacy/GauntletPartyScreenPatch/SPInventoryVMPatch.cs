@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection;
+using Wang.Setting;
 
 namespace Wang
 {
-
-
 
 
     [HarmonyPatch(typeof(SPInventoryVM))]
@@ -47,5 +48,54 @@ namespace Wang
 
             return false;
         }
+
+
+
+        [HarmonyPrefix]
+        [HarmonyPatch("SaveItemLockStates")]
+        private static bool SaveItemLockStates(SPInventoryVM __instance)
+        {
+            if (!CommonSetting.Instance.LockNoMiss)
+            {
+                return true;
+            }
+
+            List<EquipmentElement> list = Campaign.Current.GetCampaignBehavior<IInventoryLockTracker>().GetLocks().ToList();
+
+            foreach (SPItemVM spitemVM in __instance.RightItemListVM)
+            {
+                if (spitemVM.IsLocked && !list.Exists(a => a.Item.StringId == spitemVM.ItemRosterElement.EquipmentElement.Item.StringId))
+                {
+                    list.Add(spitemVM.ItemRosterElement.EquipmentElement);
+                }
+            }
+            Campaign.Current.GetCampaignBehavior<IInventoryLockTracker>().SetLocks(list);
+
+            return false;
+        }
+
+
+        [HarmonyPostfix]
+        [HarmonyPatch("AfterTransfer")]
+        private static void AfterTransfer(SPInventoryVM __instance, InventoryLogic inventoryLogic, List<TransferCommandResult> results)
+        {
+            if (!CommonSetting.Instance.LockNoMiss)
+            {
+                return;
+            }
+
+            List<EquipmentElement> list = Campaign.Current.GetCampaignBehavior<IInventoryLockTracker>().GetLocks().ToList();
+
+            foreach (SPItemVM spitemVM in __instance.RightItemListVM)
+            {
+                if (list.Exists(a => a.Item.StringId == spitemVM.ItemRosterElement.EquipmentElement.Item.StringId))
+                {
+                    spitemVM.IsLocked = true;
+                }
+            }
+
+        }
+
+
     }
 }

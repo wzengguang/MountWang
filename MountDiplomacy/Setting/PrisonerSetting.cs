@@ -134,7 +134,7 @@ namespace Wang.Setting
                 case "PrisonerSettingTier":
                     return character.Tier < minTier ? 0 : character.Tier;
                 case "PrisonerSettingIsMounted":
-                    return character.IsMounted && character.Tier >= minTier ? 1 : 0;
+                    return character.IsMounted && !character.IsArcher && character.Tier >= minTier ? 1 : 0;
                 case "PrisonerSettingIsArcher":
                     return character.IsArcher && character.Tier >= minTier ? 1 : 0;
                 case "PrisonerSettingIsInfantry":

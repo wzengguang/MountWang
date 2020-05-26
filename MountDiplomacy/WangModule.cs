@@ -134,7 +134,12 @@ namespace Wang
             base.OnApplicationTick(dt);
             ShowWar();
 
-            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.Home.IsPressed() && !GauntletWangScreen.Show)
+            if (Campaign.Current != null
+                && Campaign.Current.GameStarted && InputKey.Home.IsPressed()
+                && !GauntletWangScreen.Show
+               && Game.Current.GameStateManager.ActiveState.GetType() == typeof(MapState)
+               && !Game.Current.GameStateManager.ActiveState.IsMenuState
+               && !Game.Current.GameStateManager.ActiveState.IsMission)
             {
                 ScreenManager.PushScreen(new GauntletWangScreen());
             }
@@ -147,7 +152,10 @@ namespace Wang
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.End.IsPressed())
+            if (Campaign.Current != null && Campaign.Current.GameStarted && InputKey.End.IsPressed()
+               && Game.Current.GameStateManager.ActiveState.GetType() == typeof(MapState)
+               && !Game.Current.GameStateManager.ActiveState.IsMenuState
+               && !Game.Current.GameStateManager.ActiveState.IsMission)
             {
                 string text = "";
                 int num = 0;

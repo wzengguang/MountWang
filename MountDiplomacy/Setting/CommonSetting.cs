@@ -24,6 +24,9 @@ namespace Wang.Setting
         public override int Order { get; set; } = 1;
         public override string Name { get; set; } = "{=setting_common}Common";
 
+        [SettingBoolean("{=setting_main_feature_lock_no_miss}Lock No miss", "{=setting_main_feature_lock_no_miss_desc}Description: Locked item don`t miss by exhausted.")]
+        public bool LockNoMiss { get; set; } = true;
+
         [SettingBoolean("{=setting_main_feature_sell_out}Sell Out Optimization", "{=setting_main_feature_sell_out_desc}Description: When use sell-out funtion, if the town has not enough money, stop sell free.")]
         public bool SellOut { get; set; } = true;
 

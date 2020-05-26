@@ -43,5 +43,6 @@ namespace Wang
                 __instance.CurrentSelectedItem = null;
             }
         }
+
     }
 }

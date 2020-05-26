@@ -24,26 +24,26 @@ namespace Wang.GameComponents
                 return result;
             }
 
-            var prosperity = (int)fortification.Owner.Settlement.Prosperity;
+            var prosperity = fortification.Owner.Settlement.Prosperity;
 
             ExplainedNumber explainedNumber = new ExplainedNumber(result, explanation, null);
             float foodChange = Campaign.Current.Models.SettlementFoodModel.CalculateTownFoodStocksChange(fortification, null);
-            if (foodChange < -1 && Math.Abs(fortification.FoodStocks / foodChange) < 20)
+            if (foodChange < -1 && Math.Abs(fortification.FoodStocks / foodChange) < 20 && prosperity < 1000)
             {
                 explainedNumber.Add(-result, _surplusFoodText);
             }
             else if (SettlementSetting.Instance.boostProsperityGrowth > 0)
             {
-                var factor = SettlementSetting.Instance.boostProsperityGrowth * Math.Sqrt((10 - prosperity / 1000));
+                var factor = SettlementSetting.Instance.boostProsperityGrowth * result;
                 explainedNumber.Add((float)factor, _surplusFoodText);
             }
 
 
-            if (prosperity > 11000)
+            if (prosperity > 11000 && explainedNumber.ResultNumber > 1f)
             {
-                explainedNumber.Add((int)Math.Sqrt(result) - result, _surplusFoodText);
-
+                explainedNumber.Add((int)Math.Sqrt(explainedNumber.ResultNumber) - explainedNumber.ResultNumber, _surplusFoodText);
             }
+
             return explainedNumber.ResultNumber;
 
         }
