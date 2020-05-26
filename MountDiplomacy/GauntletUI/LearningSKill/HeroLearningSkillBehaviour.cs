@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using Wang.Saveable;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -98,7 +99,7 @@ namespace Wang
 
         private void DailyTick()
         {
-            if (this._companionHeroSaves.Count == 0 || XpMultiplierConfig.LearningXPMultipier < 1 || XpMultiplierConfig.LearningXPMultipier == 0)
+            if (this._companionHeroSaves.Count == 0)
             {
                 return;
             }
@@ -158,7 +159,7 @@ namespace Wang
                     var baseXp = 0.01f * (Campaign.Current.Models.CharacterDevelopmentModel.GetXpRequiredForSkillLevel(companionSkillValue)
                         - Campaign.Current.Models.CharacterDevelopmentModel.GetXpRequiredForSkillLevel(companionSkillValue - 1));
 
-                    var xp = XpMultiplierConfig.LearningXPMultipier * baseXp * Math.Min(10, Math.Sqrt(max[learningSkill] - companionSkillValue));
+                    var xp = XPGlobalSetting.Instance.LearningXPMultipier * baseXp * Math.Min(10, Math.Sqrt(max[learningSkill] - companionSkillValue));
 
                     xp /= (Math.Max(30, companionSkillValue) / 30);
 

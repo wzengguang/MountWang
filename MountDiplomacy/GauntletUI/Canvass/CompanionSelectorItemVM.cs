@@ -21,7 +21,7 @@ namespace Wang.GauntletUI.Canvass
             : base("")
         {
             Hero = hero;
-            base.StringItem = hero == null ? new TextObject("{=wang_selector_wait}").ToString() : hero.Name.ToString();
+            base.StringItem = hero == null ? new TextObject("{=wang_selector_none}please select a item").ToString() : hero.Name.ToString();
             base.CanBeSelected = isAvailable;
         }
     }

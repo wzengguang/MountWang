@@ -10,6 +10,7 @@ using TaleWorlds.CampaignSystem.Conversation.Tags;
 using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -20,6 +21,11 @@ namespace Wang
         [HarmonyPatch(typeof(TournamentGame), "GetTournamentPrize")]
         private static bool GetTournamentPrize(TournamentGame __instance, ref ItemObject __result)
         {
+            if (!TournamentSetting.Instance.PrizeEnabled)
+            {
+                return true;
+            }
+
             string[] e = new string[]
             {
                 "noble_horse_southern",
@@ -79,7 +85,8 @@ namespace Wang
         [HarmonyPatch(typeof(TournamentBehavior), "CalculateBet")]
         private static void CalculateBet(ref TournamentBehavior __instance)
         {
-            if (__instance.CurrentMatch == null || __instance.CurrentMatch.Teams == null)
+
+            if (__instance.CurrentMatch == null || __instance.CurrentMatch.Teams == null || !TournamentSetting.Instance.BetGoldEnabled)
             {
                 return;
             }

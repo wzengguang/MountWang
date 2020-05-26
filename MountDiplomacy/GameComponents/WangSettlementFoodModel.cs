@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
+using Wang.Setting;
 
 namespace Wang.GameComponents
 {
@@ -20,23 +21,17 @@ namespace Wang.GameComponents
         {
             var result = base.CalculateTownFoodStocksChange(town, explanation);
 
+            if (SettlementSetting.Instance.ProsperityNeedFoodMultiple == 1)
+            {
+                return result;
+            }
 
             ExplainedNumber explainedNumber = new ExplainedNumber(result, explanation, null);
-            var num = 0f;
-            var prosperity = (int)town.Owner.Settlement.Prosperity;
-            if (prosperity < 5000)
-            {
-                num = prosperity / 50 - prosperity / 70;
 
-            }
-            else if (prosperity < 10000)
-            {
-                num = prosperity / 50 - prosperity / 60;
-            }
-            else if (prosperity < 20000)
-            {
-                num = 0;
-            }
+            var prosperity = (int)town.Owner.Settlement.Prosperity;
+            var num = 0f;
+
+            num = prosperity / 50 - SettlementSetting.Instance.ProsperityNeedFoodMultiple * prosperity / 50;
             explainedNumber.Add(num, _prosperityText);
 
             return explainedNumber.ResultNumber;

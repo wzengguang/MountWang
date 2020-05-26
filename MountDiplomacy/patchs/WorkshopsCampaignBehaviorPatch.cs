@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -18,7 +19,8 @@ namespace Wang
         [HarmonyPatch(typeof(WorkshopsCampaignBehavior), "OnWarDeclared")]
         private static bool OnWarDeclared(IFaction faction1, IFaction faction2)
         {
-            return false;
+            return !CommonSetting.Instance.WorkshopNoConfiscate;
+
         }
 
 

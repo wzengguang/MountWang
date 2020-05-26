@@ -10,6 +10,7 @@ using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -20,7 +21,7 @@ namespace Wang
         {
             //     InformationManager.DisplayMessage(new InformationMessage(__result.ToString()));
 
-            __result += Clan.PlayerClan.Tier * 3;
+            __result += Clan.PlayerClan.Tier * (int)CommonSetting.Instance.HideoutBattlePlayerMaxTroopCount;
         }
     }
     //[HarmonyPatch(typeof(HideoutMissionController), "HideoutMissionController", MethodType.Constructor)]

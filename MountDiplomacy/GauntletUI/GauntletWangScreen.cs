@@ -13,6 +13,7 @@ using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.TwoDimension;
+using Wang.Setting;
 
 namespace Wang.GauntletUI
 {
@@ -28,6 +29,8 @@ namespace Wang.GauntletUI
         private SpriteCategory _clanCategory;
 
         private SpriteCategory _kingdomCategory;
+        private SpriteCategory _spriteCategory;
+
         public GauntletWangScreen()
         {
             Show = true;
@@ -59,10 +62,16 @@ namespace Wang.GauntletUI
             SpriteData spriteData = UIResourceManager.SpriteData;
             TwoDimensionEngineResourceContext resourceContext = UIResourceManager.ResourceContext;
             ResourceDepot uIResourceDepot = UIResourceManager.UIResourceDepot;
+
             _clanCategory = spriteData.SpriteCategories["ui_clan"];
             _clanCategory.Load(resourceContext, uIResourceDepot);
+
             this._kingdomCategory = spriteData.SpriteCategories["ui_kingdom"];
             this._kingdomCategory.Load(resourceContext, uIResourceDepot);
+
+            this._spriteCategory = spriteData.SpriteCategories["ui_options"];
+            this._spriteCategory.Load(resourceContext, uIResourceDepot);
+
 
             _gauntletLayer = new GauntletLayer(1);
             _gauntletLayer.InputRestrictions.SetInputRestrictions();
@@ -86,6 +95,7 @@ namespace Wang.GauntletUI
             //Game.Current.EventManager.TriggerEvent(new TutorialContextChangedEvent(TutorialContexts.None));
             _clanCategory.Unload();
             _kingdomCategory.Unload();
+            _spriteCategory.Unload();
             _dataSource = null;
             _gauntletLayer = null;
         }
@@ -100,6 +110,8 @@ namespace Wang.GauntletUI
 
         private void CloseWangScreen()
         {
+            FileData.SaveToFile();
+
             Show = false;
             ScreenManager.PopScreen();
             // Game.Current.GameStateManager.PopState();

@@ -13,6 +13,7 @@ using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;
+using Wang.GauntletUI.ModSettings;
 
 namespace Wang.GauntletUI
 {
@@ -531,8 +532,8 @@ namespace Wang.GauntletUI
             _playerUpdateTracker = PlayerUpdateTracker.Current;
             ClanMembers = new WangClanMembersVM(RefreshCategoryValues);
             CanvassVM = new CanvassVM(RefreshCategoryValues);
-            ClanFiefs = new ClanFiefsVM(RefreshCategoryValues);
             ModSettings = new ModSettingVM(RefreshCategoryValues);
+            ClanFiefs = new ClanFiefsVM(RefreshCategoryValues);
             SetSelectedCategory(0);
             Leader = new HeroVM(_clan.Leader);
             CurrentRenown = (int)Clan.PlayerClan.Renown;
@@ -559,9 +560,9 @@ namespace Wang.GauntletUI
         {
             base.RefreshValues();
             Name = Hero.MainHero.Clan.Name.ToString();
-            MembersText = new TextObject("{=wang_learning_skill}").ToString();
-            CanvassText = new TextObject("{=wang_information}").ToString();
-            IncomeText = new TextObject("{=wang_mod_setting}WangModSetting").ToString();
+            MembersText = new TextObject("{=wang_learning_skill}LearningSKill").ToString();
+            CanvassText = new TextObject("{=wang_information}ClanInformation").ToString();
+            IncomeText = new TextObject("{=wang_mod_setting}ModSetting").ToString();
             FiefsText = new TextObject("{=wang_log}").ToString();
             DoneLbl = GameTexts.FindText("str_done").ToString();
             LeaderText = GameTexts.FindText("str_sort_by_leader_name_label").ToString();
@@ -602,6 +603,7 @@ namespace Wang.GauntletUI
                     break;
                 default:
                     ModSettings.IsSelected = true;
+                    ModSettings.RefreshSetting();
                     break;
             }
             IsMembersSelected = ClanMembers.IsSelected;
@@ -615,7 +617,7 @@ namespace Wang.GauntletUI
             ClanFiefs.RefreshFiefsList();
             ClanMembers.RefreshMembersList();
             // CanvassVM.RefreshClan();
-            ModSettings.RefreshList();
+            ModSettings.RefreshValues();
         }
 
         private void ExecuteClose()

@@ -7,6 +7,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.LogEntries;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -177,7 +178,7 @@ namespace Wang
             // var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
 
             var days = GetDaysSinceTruceWithFaction(faction, faction2);
-            if ((days < Settings.TruceDays) && days > 0)
+            if ((days < DiplomacySetting.Instance.TruceDays) && days > 0)
             {
                 return true;
             }
@@ -186,14 +187,13 @@ namespace Wang
 
         public static float GetDaysSinceTruceWithFaction(IFaction faction, IFaction faction2)
         {
-            IEnumerable<LogEntry> gameActionLogs = Campaign.Current.LogEntryHistory.GameActionLogs;
-            foreach (LogEntry logEntry in gameActionLogs)
+            IReadOnlyList<LogEntry> gameActionLogs = Campaign.Current.LogEntryHistory.GameActionLogs;
+            for (int i = gameActionLogs.Count - 1; i > 0; i--)
             {
-
+                LogEntry logEntry = gameActionLogs[0];
                 if (logEntry is MakePeaceLogEntry && ((((MakePeaceLogEntry)logEntry).Faction1 == faction.MapFaction && ((MakePeaceLogEntry)logEntry).Faction2 == faction2.MapFaction) || (((MakePeaceLogEntry)logEntry).Faction1 == faction2.MapFaction && ((MakePeaceLogEntry)logEntry).Faction2 == faction.MapFaction)))
                 {
                     var days = (float)(CampaignTime.Now.ToDays - logEntry.GameTime.ToDays);
-                    //InformationManager.DisplayMessage(new InformationMessage(gameActionLogs.Count().ToString() + faction.Name.ToString() + days.ToString() + faction2.Name.ToString()));
                     return days;
                 }
             }

@@ -7,6 +7,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
+using Wang.Setting;
 
 namespace Wang.GameComponents
 {
@@ -23,16 +24,20 @@ namespace Wang.GameComponents
                 return result;
             }
 
+            var prosperity = (int)fortification.Owner.Settlement.Prosperity;
 
             ExplainedNumber explainedNumber = new ExplainedNumber(result, explanation, null);
-            float num = Campaign.Current.Models.SettlementFoodModel.CalculateTownFoodStocksChange(fortification, null);
-            if (num < 1 || (num < -1 && Math.Abs(fortification.FoodStocks / num) < 20))
+            float foodChange = Campaign.Current.Models.SettlementFoodModel.CalculateTownFoodStocksChange(fortification, null);
+            if (foodChange < -1 && Math.Abs(fortification.FoodStocks / foodChange) < 20)
             {
                 explainedNumber.Add(-result, _surplusFoodText);
-                return explainedNumber.ResultNumber;
+            }
+            else if (SettlementSetting.Instance.boostProsperityGrowth > 0)
+            {
+                var factor = SettlementSetting.Instance.boostProsperityGrowth * Math.Sqrt((10 - prosperity / 1000));
+                explainedNumber.Add((float)factor, _surplusFoodText);
             }
 
-            var prosperity = (int)fortification.Owner.Settlement.Prosperity;
 
             if (prosperity > 11000)
             {

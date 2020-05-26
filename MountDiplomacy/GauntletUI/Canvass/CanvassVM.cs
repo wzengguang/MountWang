@@ -76,7 +76,7 @@ namespace Wang.GauntletUI
             this.TypeText = GameTexts.FindText("str_sort_by_type_label", null).ToString();
             base.CategoryNameText = new TextObject("{=j4F7tTzy}Clan", null).ToString();
             base.NoItemSelectedText = GameTexts.FindText("str_kingdom_no_clan_selected", null).ToString();
-            this.CanvassInfoText = new TextObject("{=canvass_info}", null).ToString();
+            this.CanvassInfoText = new TextObject("{=canvass_info}asign hero to canvass clan", null).ToString();
 
         }
 
@@ -195,7 +195,7 @@ namespace Wang.GauntletUI
             MBTextManager.SetTextVariable("CANVASS_COST", CanvassBehavior.GetExpectGoldCostOfRelation(clan, relation));
 
             MBTextManager.SetTextVariable("CANVASS_RELATION", relation);
-            this.CanvassRelationGainText = new TextObject("{=canvass_relation_gain}", null).ToString();
+            this.CanvassRelationGainText = new TextObject("{=canvass_relation_gain}expect get {CANVASS_RELATION} relation weekly.cost {CANVASS_COST} gold", null).ToString();
         }
 
 
@@ -205,11 +205,11 @@ namespace Wang.GauntletUI
 
             if (clan != null)
             {
-                CurrentCanvassClanText = new TextObject("{=canvass_current_clan}").ToString() + clan?.Name.ToString();
+                CurrentCanvassClanText = new TextObject("{=canvass_current_clan}current canvass clan is ").ToString() + clan?.Name.ToString();
             }
             else
             {
-                CurrentCanvassClanText = new TextObject("{=canvass_current_no_clan}").ToString();
+                CurrentCanvassClanText = new TextObject("{=canvass_current_no_clan}no chosen clan").ToString();
             }
 
 

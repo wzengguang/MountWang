@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
+using Wang.Setting;
 
 namespace Wang.patchs
 {
@@ -22,7 +23,7 @@ namespace Wang.patchs
         {
             if (prisoner != Hero.MainHero && !prisoner.IsPlayerCompanion && detail == EndCaptivityDetail.ReleasedAfterBattle)
             {
-                prisoner.DaysLeftToRespawn = Settings.PrisonerDaysLeftToRespawn;
+                prisoner.DaysLeftToRespawn = (int)DiplomacySetting.Instance.PrisonerDaysLeftToRespawn;
             }
 
         }

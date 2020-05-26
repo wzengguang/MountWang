@@ -9,6 +9,7 @@ using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -17,11 +18,17 @@ namespace Wang
     {
         private static bool Prefix(Hero hero)
         {
+
+            if (!PrisonerEscapeSetting.Instance.IsEnabled)
+            {
+                return true;
+            }
+
             if (hero.IsPrisoner && hero.PartyBelongedToAsPrisoner != null && hero != Hero.MainHero)
             {
                 var time = (CampaignTime.Now - hero.CaptivityStartTime).ToDays;
 
-                float num = Math.Min((float)(time * time / PrisonerEscapeConfig.BaseLine), 0.075f);
+                float num = Math.Min((float)(time * time / (PrisonerEscapeSetting.Instance.Basedays * PrisonerEscapeSetting.Instance.Basedays * 10)), 0.075f);
 
                 if (hero.PartyBelongedToAsPrisoner.IsMobile)
                 {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents.Party;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang.patchs
 {
@@ -22,7 +23,7 @@ namespace Wang.patchs
                 ExplainedNumber explainedNumber = new ExplainedNumber(__result, explanation, null);
                 var roguery = party.Leader.GetSkillValue(DefaultSkills.Roguery);
                 roguery = Math.Max(1, roguery);
-                var add = __result * roguery / 200f;
+                var add = __result * roguery * CommonSetting.Instance.PartyPrisonerSizeLimitBySkill / 1000f;
                 explainedNumber.Add((int)add, DefaultSkills.Roguery.Name);
                 __result = (int)explainedNumber.ResultNumber;
             }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 namespace Wang
@@ -22,12 +23,17 @@ namespace Wang
 
         public void Recruit(Town town)
         {
-            if ((!town.IsCastle && !town.IsTown) || town.GarrisonParty == null || town.GarrisonParty.PrisonRoster == null || town.Settlement.IsStarving)
+            if ((!town.IsCastle && !town.IsTown) || town.Owner == null || town.Owner.PrisonRoster == null)
             {
                 return;
             }
 
-            TroopRoster prisonRoster = town.GarrisonParty.PrisonRoster;
+            if (town.GarrisonParty == null)
+            {
+                town.Settlement.AddGarrisonParty(false);
+            }
+
+            TroopRoster prisonRoster = town.Owner.PrisonRoster;
             float[] dailyRecruitedPrisoners = Array.Empty<float>();
             PrisonerRecruitmentCalculationModelPatch.GetDailyRecruitedPrisoners(ref dailyRecruitedPrisoners, MobileParty.MainParty);
             int num = MBRandom.RandomInt(prisonRoster.Count);
@@ -41,14 +47,13 @@ namespace Wang
                     continue;
                 }
 
-
                 int tier = characterAtIndex.Tier;
                 if (tier < dailyRecruitedPrisoners.Length && dailyRecruitedPrisoners[tier] > 0f && MBRandom.RandomFloat < dailyRecruitedPrisoners[tier])//
                 {
 
                     dailyRecruitedPrisoners[tier] -= 1f;
 
-                    if (MBRandom.RandomFloat < (town.Owner.LeaderHero == Hero.MainHero ? 0.8 : 0.5))
+                    if (MBRandom.RandomFloat < (town.Settlement.OwnerClan == Clan.PlayerClan ? 0.8 : 1))
                     {
                         town.GarrisonParty.MemberRoster.AddToCounts(characterAtIndex, 1);
                     }
@@ -56,11 +61,15 @@ namespace Wang
 
                 }
             }
-
-
-
-
         }
 
+
+
+
+
+
+
     }
+
 }
+

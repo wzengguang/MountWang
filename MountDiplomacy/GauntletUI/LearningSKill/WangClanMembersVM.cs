@@ -267,9 +267,9 @@ namespace Wang.GauntletUI
         {
             base.RefreshValues();
             FamilyText = GameTexts.FindText("str_family_group").ToString();
-            WishPerksText = new TextObject("{=wang_washPerk}").ToString();
+            WishPerksText = new TextObject("{=wang_washPerk}WashPerk").ToString();
             TraitsText = GameTexts.FindText("str_traits_group").ToString();
-            LearnSkillFromOtherText = new TextObject("{=str_learning_skill}").ToString();
+            LearnSkillFromOtherText = new TextObject("{=str_learning_skill}Learning which skill from other").ToString();
             Family.ApplyActionOnAllItems(delegate (WangLordItemVM x)
             {
                 x.RefreshValues();
@@ -338,7 +338,7 @@ namespace Wang.GauntletUI
             member.Initialized = false;
             CurrentSelectedMember = member;
             RefreshCanWashPerks();
-            CanWashPerksHint.HintText = new TextObject("{=wang_washHint}").ToString();
+            CanWashPerksHint.HintText = new TextObject("{=wang_washHint}wask current hero perks").ToString();
             if (member != null)
             {
                 member.IsSelected = true;
@@ -354,7 +354,7 @@ namespace Wang.GauntletUI
             {
                 var time = (3 - Campaign.Current.GetCampaignBehavior<HeroLearningSkillBehaviour>().GetWishPerkTime(CurrentSelectedMember.GetHero())).ToString();
                 MBTextManager.SetTextVariable("WASH_TIME", time);
-                InformationManager.ShowInquiry(new InquiryData(string.Empty, new TextObject("{=wang_washPerkConfirm}").ToString(), isAffirmativeOptionShown: true, isNegativeOptionShown: true, GameTexts.FindText("str_yes").ToString(), GameTexts.FindText("str_no").ToString(), OnWishPerks, null));
+                InformationManager.ShowInquiry(new InquiryData(string.Empty, new TextObject("{=wang_washPerkConfirm}you now wash perks? current hero remains {WASH_TIME}").ToString(), isAffirmativeOptionShown: true, isNegativeOptionShown: true, GameTexts.FindText("str_yes").ToString(), GameTexts.FindText("str_no").ToString(), OnWishPerks, null));
             }
         }
 

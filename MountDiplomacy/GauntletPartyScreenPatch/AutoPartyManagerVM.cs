@@ -20,7 +20,6 @@ namespace Wang
 
         private SelectorVM<OrderTroopSelectorItemVM> _orderTroop;
 
-
         [DataSourceProperty]
         public SelectorVM<OrderTroopSelectorItemVM> OrderTroop
         {
@@ -37,9 +36,6 @@ namespace Wang
                 }
             }
         }
-
-
-
 
         public AutoPartyManagerVM(PartyVM partyVM)
         {
@@ -62,9 +58,6 @@ namespace Wang
         {
             if (obj.SelectedItem != null)
             {
-
-                InformationManager.DisplayMessage(new InformationMessage(obj.SelectedItem.SortType.ToString()));
-
                 SortPartyConfig.SortOrder = obj.SelectedItem.SortType;
                 // obj.SelectedItem.SortType=
                 var newOrders = new MBBindingList<PartyCharacterVM>();
@@ -77,20 +70,11 @@ namespace Wang
                         }
                         _partyVM.MainPartyTroops = newOrders;
                         break;
-
                 }
-
-
                 _partyVM.RefreshValues();
 
             }
         }
-
-
-
-
-
-
 
         public void ExecuteRecruitAll()
         {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -17,13 +18,7 @@ namespace Wang
         [HarmonyPatch("GetDailyRecruitedPrisoners")]
         public static bool GetDailyRecruitedPrisoners(ref float[] __result, MobileParty mainParty)
         {
-            var f = new float[RecruitConfig.RecruitChange.Length];
-
-            for (int i = 0; i < f.Length; i++)
-            {
-                f[i] = RecruitConfig.RecruitChange[i];
-            }
-            __result = f;
+            __result = PrisonerRecruitChanceSetting.Instance.Chances();
             return false;
         }
     }

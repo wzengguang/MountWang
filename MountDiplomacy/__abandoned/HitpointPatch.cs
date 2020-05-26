@@ -11,7 +11,7 @@ using TaleWorlds.Library;
 
 namespace Wang.Perks
 {
-    [HarmonyPatch(typeof(DefaultCharacterStatsModel), "MaxHitpoints")]
+    //[HarmonyPatch(typeof(DefaultCharacterStatsModel), "MaxHitpoints")]
     class HitpointPatch
     {
         public static void Postfix(ref int __result, CharacterObject character, StatExplainer explanation = null)

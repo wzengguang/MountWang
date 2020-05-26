@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -17,6 +18,11 @@ namespace Wang
         /// </summary>
         private static bool Prefix(MobileParty __instance)
         {
+            if (!XPGlobalSetting.Instance.EnableCombatTipsAndRaiseTheMeekSkillRework)
+            {
+                return true;
+            }
+
             if (__instance.IsActive && __instance.HasPerk(DefaultPerks.Leadership.CombatTips))
             {
                 foreach (CharacterObject troop in __instance.MemberRoster.Troops)

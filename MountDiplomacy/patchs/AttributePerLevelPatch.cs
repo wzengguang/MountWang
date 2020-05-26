@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -13,7 +14,7 @@ namespace Wang
     {
         private static void Postfix(ref int __result)
         {
-            __result = 1;
+            __result = (int)CommonSetting.Instance.LevelsPerAttributePoint;
         }
     }
 }

@@ -100,8 +100,15 @@ namespace Wang
         [HarmonyPatch(typeof(Agent), "set_Equipment")]
         public static void Equipment(Agent __instance, MissionEquipment value)
         {
-            if (!__instance.IsHero || !(__instance.Character is CharacterObject charObj))
+            if (!__instance.IsHero)
                 return;
+
+            var charObj = __instance.Character as CharacterObject;
+
+            if (charObj == null)
+            {
+                return;
+            }
 
             for (var i = 0; i < 5; i++)
             {
@@ -167,9 +174,11 @@ namespace Wang
         [HarmonyPatch(typeof(Agent), "WeaponEquipped")]
         private static void WeaponEquipped(Agent __instance, EquipmentIndex equipmentSlot, ref WeaponData weaponData, WeaponStatsData[] weaponStatsData, ref WeaponData ammoWeaponData, WeaponStatsData[] ammoWeaponStatsData, GameEntity weaponEntity, bool removeOldWeaponFromScene, bool isWieldedOnSpawn)
         {
-            if (__instance.IsHero && weaponStatsData != null)
+            if (!__instance.IsHero || !(__instance.Character is CharacterObject hero))
+                return;
+
+            if (weaponStatsData != null)
             {
-                var hero = ((CharacterObject)__instance.Character);
                 for (int i = 0; i < weaponStatsData.Length; i++)
                 {
                     switch ((WeaponClass)weaponStatsData[i].WeaponClass)

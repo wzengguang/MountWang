@@ -10,6 +10,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterDeveloper;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -18,13 +19,13 @@ namespace Wang
     {
         public static void Postfix(ref float __result, Hero hero, SkillObject skill, StatExplainer explainer = null)
         {
-            if (hero == Hero.MainHero && XpMultiplierConfig.PlayerEnabled)
+            if (hero == Hero.MainHero)
             {
-                __result *= XpMultiplierConfig.PlayerMultipier;
+                __result *= XPGlobalSetting.Instance.PlayerXPMultiple;
             }
-            else if (hero.Clan == Hero.MainHero.Clan && XpMultiplierConfig.PlayerEnabled)
+            else if (hero.Clan == Hero.MainHero.Clan)
             {
-                __result *= XpMultiplierConfig.TeammateMultipier;
+                __result *= XPGlobalSetting.Instance.CompanionXPMultiple;
             }
         }
     }
@@ -37,13 +38,13 @@ namespace Wang
 
             if (__instance.HeroDeveloper != null)
             {
-                if (__instance.HeroDeveloper.Hero == Hero.MainHero && XpMultiplierConfig.PlayerEnabled)
+                if (__instance.HeroDeveloper.Hero == Hero.MainHero)
                 {
-                    xpAmount = xpAmount * XpMultiplierConfig.PlayerMultipier;
+                    xpAmount = xpAmount * XPGlobalSetting.Instance.PlayerXPMultiple;
                 }
-                else if (__instance.HeroDeveloper.Hero.Clan == Hero.MainHero.Clan && XpMultiplierConfig.PlayerEnabled)
+                else if (__instance.HeroDeveloper.Hero.Clan == Hero.MainHero.Clan)
                 {
-                    xpAmount = xpAmount * XpMultiplierConfig.TeammateMultipier;
+                    xpAmount = xpAmount * XPGlobalSetting.Instance.CompanionXPMultiple;
                 }
 
                 //

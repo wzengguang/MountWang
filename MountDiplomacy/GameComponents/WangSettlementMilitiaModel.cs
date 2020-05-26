@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
+using Wang.Setting;
 
 namespace Wang.GameComponents
 {
@@ -194,11 +195,10 @@ namespace Wang.GameComponents
             meleeEliteTroopRate = 0.1f;
             if (settlement.IsTown && settlement.Town.Governor != null && settlement.Town.Governor.GetPerkValue(DefaultPerks.Leadership.CitizenMilitia) && settlement.Town.Governor.CurrentSettlement != null && settlement.Town.Governor.CurrentSettlement.IsTown && settlement.Town.Governor.CurrentSettlement.Town == settlement.Town)
             {
-                //PrimaryBonus 默认20   PrimaryBonus / 100f
-                rangedEliteTroopRate += DefaultPerks.Leadership.CitizenMilitia.PrimaryBonus / SettlementMillitiaConfig.EliteTroopRate;
-                meleeEliteTroopRate += DefaultPerks.Leadership.CitizenMilitia.PrimaryBonus / SettlementMillitiaConfig.EliteTroopRate;
-            }
+                rangedEliteTroopRate += DefaultPerks.Leadership.CitizenMilitia.PrimaryBonus / 100f;
+                meleeEliteTroopRate += DefaultPerks.Leadership.CitizenMilitia.PrimaryBonus / 100f;
 
+            }
             if (settlement.IsTown && settlement.Town.Governor != null)
             {
                 ExplainedNumber explainedNumber = new ExplainedNumber(0f, null);
@@ -206,6 +206,10 @@ namespace Wang.GameComponents
                 rangedEliteTroopRate += explainedNumber.ResultNumber;
                 meleeEliteTroopRate += explainedNumber.ResultNumber;
             }
+
+            rangedEliteTroopRate *= SettlementSetting.Instance.EliteTroopRate;
+            meleeEliteTroopRate *= SettlementSetting.Instance.EliteTroopRate;
+
         }
 
         private static void GetSettlementMilitiaChangeDueToPerks(Settlement settlement, ref ExplainedNumber result)

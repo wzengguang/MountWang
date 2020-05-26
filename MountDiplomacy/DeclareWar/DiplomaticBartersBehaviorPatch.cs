@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Barterables;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors.BarterBehaviors;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents.Map;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -37,7 +38,7 @@ namespace Wang
                 return true;
             }
 
-            return !Settings.DisableClanJumpBetweenKingdom;
+            return !DiplomacySetting.Instance.DisableClanJobHop;
         }
     }
 }

@@ -26,15 +26,17 @@ namespace EnhanceLordTroop
 
         private void UpdateTroopScale()
         {
+            var ratio = AddXpToLordTroopSetting.Instance == null ? XpMultiplierConfigBase.PartyTroopRatio : AddXpToLordTroopSetting.Instance.GetTierRatio();
+
             int daysUntilNow = (int)Campaign.Current.CampaignStartTime.ElapsedDaysUntilNow;
             if (daysUntilNow % 7 != 0 ||
                 daysUntilNow < 30 ||
                 Clan.PlayerClan.Settlements == null ||
                 Clan.PlayerClan.Settlements.Count() <= 0)
             {
-                for (int i = 0; i < XpMultiplierConfigBase.PartyTroopRatio.Length; i++)
+                for (int i = 0; i < ratio.Length; i++)
                 {
-                    _troopScale[i] = XpMultiplierConfigBase.PartyTroopRatio[i];
+                    _troopScale[i] = ratio[i];
                 }
                 return;
             }
@@ -91,7 +93,7 @@ namespace EnhanceLordTroop
 
             for (int i = 0; i < _troopScale.Length; i++)
             {
-                _troopScale[i] = XpMultiplierConfigBase.PartyTroopRatio[i];
+                _troopScale[i] = ratio[i];
             }
 
             for (int i = playerTierTroopCount.Length - 1; i > 0; i--)
@@ -124,6 +126,12 @@ namespace EnhanceLordTroop
                 return;
             }
 
+            if (AddXpToLordTroopSetting.Instance != null && !AddXpToLordTroopSetting.Instance.IsEnabled)
+            {
+                return;
+            }
+
+
             //foreach (LogEntry item2 in Campaign.Current.LogEntryHistory.GameActionLogs.Reverse())
             //{
             //    IEncyclopediaLog encyclopediaLog;
@@ -143,7 +151,7 @@ namespace EnhanceLordTroop
 
 
             float[] ratio = _troopScale;
-            var xps = XpMultiplierConfigBase.TierXps;
+            var xps = AddXpToLordTroopSetting.Instance == null ? XpMultiplierConfigBase.TierXps : AddXpToLordTroopSetting.Instance.GetTierXps();
 
             var total = 0f + __instance.MemberRoster.Where(a => !a.Character.IsHero).Select(a => a.Number).Sum();
             List<CharacterObject>[] troopOrder = new List<CharacterObject>[7] { new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>(), new List<CharacterObject>() };

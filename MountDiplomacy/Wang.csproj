@@ -21,8 +21,8 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>C:\Program Files %28x86%29\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\Wang\bin\Win64_Shipping_Client\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -33,17 +33,23 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>C:\Program Files %28x86%29\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\Wang\bin\Win64_Shipping_Client\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.0.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Lib.Harmony.2.0.0.9\lib\net45\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="SandBox">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
@@ -63,20 +69,25 @@
     </Reference>
     <Reference Include="StoryMode">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="StoryMode.GauntletUI">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.GauntletUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="StoryMode.View">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.View.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="StoryMode.ViewModelCollection">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\StoryMode\bin\Win64_Shipping_Client\StoryMode.ViewModelCollection.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -265,15 +276,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="__abandoned\PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch.cs" />
     <Compile Include="GameComponents\WangDefaultTroopSacrificeModel.cs" />
     <Compile Include="GameComponents\WangSettlementFoodModel.cs" />
     <Compile Include="GameComponents\WangSettlementProsperityModel.cs" />
     <Compile Include="GauntletPartyScreenPatch\PartyVMPatch.cs" />
+    <Compile Include="GauntletPartyScreenPatch\SPInventoryVMPatch.cs" />
     <Compile Include="GauntletUI\Canvass\CanvassBehavior.cs" />
     <Compile Include="GauntletUI\Canvass\CanvassKingdomClanItemVM.cs" />
     <Compile Include="GauntletUI\Canvass\CanvassKingdomClanSortControllerVM.cs" />
+    <Compile Include="GauntletUI\ModSettings\WangBlankOptionDataVM.cs" />
+    <Compile Include="GauntletUI\ModSettings\WangOptionsItemWidget.cs" />
+    <Compile Include="GauntletUI\ModSettings\WangStringOptionDataVM.cs" />
     <Compile Include="patchs\CharacterRelationCampaignBehaviorPatch.cs" />
     <Compile Include="patchs\DefaultPartySizeLimitModelPatch.cs" />
+    <Compile Include="patchs\DefaultSettlementEconomyModelPatch.cs" />
     <Compile Include="patchs\FirstPhaseCampaignBehaviorPatch.cs" />
     <Compile Include="Saveable\CanvassSave.cs" />
     <Compile Include="Saveable\CompanionHeroSave.cs" />
@@ -281,41 +298,51 @@
     <Compile Include="GauntletUI\Canvass\CanvassVM.cs" />
     <Compile Include="GauntletUI\Canvass\CompanionSelectorItemVM.cs" />
     <Compile Include="patchs\AttributePerLevelPatch.cs" />
-    <Compile Include="BanditsCampaignBehavior\CustomBanditDensityModel.cs" />
-    <Compile Include="BanditsCampaignBehavior\BanditConfig.cs" />
+    <Compile Include="patchs\CustomBanditDensityModel.cs" />
     <Compile Include="patchs\DefaultClanFinanceModelPatch.cs" />
     <Compile Include="patchs\EndCaptivityActionPatch.cs" />
     <Compile Include="patchs\PregnancyCampaignBehaviorPatch.cs" />
-    <Compile Include="GameComponents\WangSettlementGarrisonModel.cs" />
+    <Compile Include="__abandoned\WangSettlementGarrisonModel.cs" />
     <Compile Include="GameComponents\WangSettlementMilitiaModel.cs" />
-    <Compile Include="GameComponents\TroopCountLimitConfig.cs" />
     <Compile Include="Perks\AgentAndItemMenuVMPatch.cs" />
     <Compile Include="patchs\DefaultClanModelPatch.cs" />
     <Compile Include="patchs\DefaultTroopCountLimitModelPatch.cs" />
     <Compile Include="GauntletPartyScreenPatch\AutoPartyManagerVM.cs" />
     <Compile Include="GauntletPartyScreenPatch\OrderTroopSelectorItemVM.cs" />
     <Compile Include="GauntletUI\GauntletWangScreen.cs" />
-    <Compile Include="GauntletUI\ModSettingVM.cs" />
+    <Compile Include="GauntletUI\ModSettings\ModSettingVM.cs" />
     <Compile Include="GauntletUI\LearningSKill\WangClanMembersVM.cs" />
     <Compile Include="GauntletUI\LearningSKill\WangLordItemVM.cs" />
     <Compile Include="GauntletUI\WangVM.cs" />
     <Compile Include="Help.cs" />
     <Compile Include="DeclareWar\DiplomaticBartersBehaviorPatch.cs" />
-    <Compile Include="patchs\DefaultDiplomacyModelPatch.cs" />
+    <Compile Include="__abandoned\DefaultDiplomacyModelPatch.cs" />
     <Compile Include="Perks\CompanionLimitpatch.cs" />
     <Compile Include="Perks\DefaultPerksPatch.cs" />
-    <Compile Include="Perks\HitpointPatch.cs" />
+    <Compile Include="__abandoned\HitpointPatch.cs" />
     <Compile Include="Perks\PartySizeRelatedPatch.cs" />
     <Compile Include="Perks\SandboxAgentStatCalculateModelPatch.cs" />
     <Compile Include="Perks\ScoutPartySpeedPatch.cs" />
-    <Compile Include="PrisonerEscapeCampaignBehaviorPatch\PrisonerEscapeCampaignBehaviorPatch.cs" />
-    <Compile Include="PrisonerEscapeCampaignBehaviorPatch\PrisonerEscapeConfig.cs" />
+    <Compile Include="patchs\PrisonerEscapeCampaignBehaviorPatch.cs" />
     <Compile Include="GauntletPartyScreenPatch\GauntletPartyScreenPatch.cs" />
     <Compile Include="GauntletPartyScreenPatch\PartyVMExtension.cs" />
     <Compile Include="GauntletUI\LearningSKill\SkillLearningSelectorItemVM.cs" />
     <Compile Include="patchs\TournamentGamePatch.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Setting\BanditsSetting.cs" />
+    <Compile Include="Setting\MainSetting.cs" />
+    <Compile Include="Setting\TournamentSetting.cs" />
+    <Compile Include="Setting\DiplomacySetting.cs" />
+    <Compile Include="Setting\PrisonerRecruitChanceSetting.cs" />
+    <Compile Include="Setting\PrisonerEscapeSetting.cs" />
+    <Compile Include="Setting\CommonSetting.cs" />
+    <Compile Include="Setting\XPGlobalSetting.cs" />
+    <Compile Include="Setting\SettlementSetting.cs" />
+    <Compile Include="Setting\PrisonerSetting.cs" />
+    <Compile Include="GauntletUI\ModSettings\SettingVM.cs" />
+    <Compile Include="GauntletUI\ModSettings\WangNumericOptionDataVM.cs" />
+    <Compile Include="GauntletUI\ModSettings\WangBooleanOptionDataVM.cs" />
+    <Compile Include="GauntletUI\ModSettings\WangGenericOptionDataVM.cs" />
+    <Compile Include="GauntletUI\ModSettings\WangOptionsDataType.cs" />
     <Compile Include="__abandoned\PartyScreenLogicPatch\PartyScreenLogicPatch.cs" />
     <Compile Include="__abandoned\PartyScreenLogicPatch\SortPartyHelpers.cs" />
     <Compile Include="__abandoned\PartyScreenLogicPatch\SortPartyConfig.cs" />
@@ -323,22 +350,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PrisonerRecruitmentCalculationModel\PrisonerRecruitmentCalculationModelPatch.cs" />
     <Compile Include="PrisonerRecruitmentCalculationModel\CustomTownRecruitPrisonersCampaignBehavior.cs" />
-    <Compile Include="PrisonerRecruitmentCalculationModel\RecruitConfig.cs" />
     <Compile Include="__abandoned\SiegeEventModel\SiegeEventModelPatch.cs" />
-    <Compile Include="__abandoned\SiegeEventModel\SiegeConfig.cs" />
     <Compile Include="patchs\SmeltingVMPatch.cs" />
     <Compile Include="WangModule.cs" />
-    <Compile Include="DeclareWar\PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch.cs" />
+    <Compile Include="DeclareWar\KingdomDecisionProposalBehaviorPatch.cs" />
     <Compile Include="patchs\WorkshopsCampaignBehaviorPatch.cs" />
     <Compile Include="XpMultiplier\MobilePartyPatch.cs" />
     <Compile Include="GauntletUI\LearningSKill\HeroLearningSkillBehaviour.cs" />
-    <Compile Include="XpMultiplier\XpMultiplierConfig.cs" />
     <Compile Include="XpMultiplier\HeroPatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -346,6 +371,10 @@
       <Project>{38d316f9-bc9f-4b77-b5a2-93cfc4c99495}</Project>
       <Name>EnhanceLordTroop</Name>
       <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\WangCore\WangCore.csproj">
+      <Project>{126921bc-823d-4599-bc45-c9ef94b30ead}</Project>
+      <Name>WangCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

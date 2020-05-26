@@ -21,41 +21,20 @@ using TaleWorlds.MountAndBlade;
 using Wang.GameComponents;
 using Wang.GauntletUI;
 using Wang.GauntletUI.Canvass;
+using Wang.patchs;
+using Wang.Setting;
 
 namespace Wang
 {
     public class WangModule : MBSubModuleBase
     {
-        private static string FILE_NAME = BasePath.Name + "Modules/Wang/ModuleData/config.xml";
-
-        public void InitConfig()
-        {
-            XmlReaderSettings settings = new XmlReaderSettings
-            {
-                IgnoreComments = true
-            };
-            using (XmlReader reader = XmlReader.Create(FILE_NAME, settings))
-            {
-
-                XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(reader);
-                Settings.Init(xmlDocument);
-                XpMultiplierConfig.Init(xmlDocument);
-                SortPartyConfig.init(xmlDocument);
-                SiegeConfig.Init(xmlDocument);
-                RecruitConfig.Init(xmlDocument);
-                PrisonerEscapeConfig.Init(xmlDocument);
-                SettlementMillitiaConfig.Init(xmlDocument);
-                BanditConfig.Init(xmlDocument);
-            }
-        }
-
         protected override void OnSubModuleLoad()
         {
+            FileData.ReadFromFile(typeof(WangModule));
+            FileData.ReadFromFile(typeof(EnhanceLordTroopModule));
             base.OnSubModuleLoad();
             try
             {
-                InitConfig();
                 // Harmony.DEBUG = true;
                 Harmony harmony = new Harmony("mod.bannerlord.wang");
                 FileLog.Reset();
@@ -68,10 +47,6 @@ namespace Wang
             }
         }
 
-        public override void OnNewGameCreated(Game game, object initializerObject)
-        {
-            base.OnNewGameCreated(game, initializerObject);
-        }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             base.OnGameStart(game, gameStarterObject);
@@ -87,16 +62,18 @@ namespace Wang
         public override void OnGameLoaded(Game game, object initializerObject)
         {
             base.OnGameLoaded(game, initializerObject);
-
         }
 
         private void AddBehaviour(CampaignGameStarter gameStarterObject)
         {
             gameStarterObject.AddBehavior(new HeroLearningSkillBehaviour());
-            //  gameStarterObject.AddBehavior(new CustomBanditsCampaignBehavior());//会自动覆盖原来的。
-            gameStarterObject.AddBehavior(new CustomTownRecruitPrisonersCampaignBehavior());
+            if (PrisonerRecruitChanceSetting.Instance.TownRecruitIsEnabled)
+            {
+                gameStarterObject.AddBehavior(new CustomTownRecruitPrisonersCampaignBehavior());
+            }
             gameStarterObject.AddBehavior(new AddXpToLordTroopBehaviour());
             gameStarterObject.AddBehavior(new CanvassBehavior());
+
         }
 
         private void ReplaceGameModel(CampaignGameStarter starter)
@@ -109,7 +86,7 @@ namespace Wang
             for (int i = 0; i < list.Count; i++)
             {
 
-                if (list[i] is DefaultSettlementMilitiaModel)
+                if (SettlementSetting.Instance.MillitiaIsEnabled && list[i] is DefaultSettlementMilitiaModel)
                 {
                     list[i] = new WangSettlementMilitiaModel();
                 }
@@ -118,16 +95,16 @@ namespace Wang
                 //    list[i] = new CustomSettlementGarrisonModel();
                 //}
 
-                if (list[i] is DefaultSettlementFoodModel)
+                if (SettlementSetting.Instance.ProsperityNeedFoodMultiple < 1 && list[i] is DefaultSettlementFoodModel)
                 {
                     list[i] = new WangSettlementFoodModel();
                 }
 
-                if (list[i] is DefaultSettlementProsperityModel)
+                if (SettlementSetting.Instance.ProsperityEnabled && list[i] is DefaultSettlementProsperityModel)
                 {
                     list[i] = new WangSettlementProsperityModel();
                 }
-                if (list[i] is DefaultTroopSacrificeModel)
+                if (SettlementSetting.Instance.SacrificeEnabled && list[i] is DefaultTroopSacrificeModel)
                 {
                     list[i] = new WangDefaultTroopSacrificeModel();
                 }

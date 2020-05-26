@@ -83,7 +83,7 @@ namespace Wang.GauntletUI.Canvass
             var relation = GetExpectRelation(hero, clan, daysToNow);
             var cost = GetExpectGoldCostOfRelation(clan, relation);
 
-            if (Hero.MainHero.Gold > cost * 1.5)
+            if (Hero.MainHero.Gold > cost * 1.2 && CharacterRelationManager.GetHeroRelation(Hero.MainHero, clan.Leader) < 100)
             {
                 ChangeRelationAction.ApplyPlayerRelation(clan.Leader, GetExpectRelation(hero, clan, daysToNow, false));
                 GiveGoldAction.ApplyBetweenCharacters(Hero.MainHero, clan.Leader, cost);
@@ -104,7 +104,7 @@ namespace Wang.GauntletUI.Canvass
         {
             var bonus = GetTraitBonus(hero, clan.Leader) + GetTraitBonus(Hero.MainHero, clan.Leader);
 
-            var addRelation = bonus * 20 * (daysToNow > 7 ? 1 : daysToNow / 7f);
+            var addRelation = bonus * 10 * (daysToNow > 7 ? 1 : daysToNow / 7f);
 
             if (!hasFactor || addRelation == 0)
             {
