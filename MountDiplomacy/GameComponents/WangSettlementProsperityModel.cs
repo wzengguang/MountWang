@@ -19,32 +19,34 @@ namespace Wang.GameComponents
         {
             var result = base.CalculateProsperityChange(fortification, explanation);
 
-            if (fortification.Owner.IsStarving || result < 1)
+            if (fortification.Owner.IsStarving || result < 0)
             {
                 return result;
             }
 
             var prosperity = fortification.Owner.Settlement.Prosperity;
 
-            ExplainedNumber explainedNumber = new ExplainedNumber(result, explanation, null);
+            ExplainedNumber explainedNumber = new ExplainedNumber(0f, explanation, null);
             float foodChange = Campaign.Current.Models.SettlementFoodModel.CalculateTownFoodStocksChange(fortification, null);
-            if (foodChange < -1 && Math.Abs(fortification.FoodStocks / foodChange) < 20 && prosperity < 1000)
+            if (foodChange < -1 && Math.Abs(fortification.FoodStocks / foodChange) < 20 && prosperity < 1000 && result > 1)
             {
                 explainedNumber.Add(-result, _surplusFoodText);
             }
             else if (SettlementSetting.Instance.boostProsperityGrowth > 0)
             {
-                var factor = SettlementSetting.Instance.boostProsperityGrowth * result;
+                var factor = SettlementSetting.Instance.boostProsperityGrowth * result > 1 ? result : 1;
                 explainedNumber.Add((float)factor, _surplusFoodText);
             }
 
 
-            if (prosperity > 11000 && explainedNumber.ResultNumber > 1f)
+            var r = result + explainedNumber.ResultNumber;
+
+            if (prosperity > 11000 && r > 1f)
             {
-                explainedNumber.Add((int)Math.Sqrt(explainedNumber.ResultNumber) - explainedNumber.ResultNumber, _surplusFoodText);
+                explainedNumber.Add((int)Math.Sqrt(r) - r, _surplusFoodText);
             }
 
-            return explainedNumber.ResultNumber;
+            return result + explainedNumber.ResultNumber;
 
         }
     }

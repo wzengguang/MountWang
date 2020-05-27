@@ -26,7 +26,7 @@ namespace Wang.GameComponents
                 return result;
             }
 
-            ExplainedNumber explainedNumber = new ExplainedNumber(result, explanation, null);
+            ExplainedNumber explainedNumber = new ExplainedNumber(0f, explanation, null);
 
             var prosperity = (int)town.Owner.Settlement.Prosperity;
             var num = 0f;
@@ -34,7 +34,7 @@ namespace Wang.GameComponents
             num = prosperity / 50 - SettlementSetting.Instance.ProsperityNeedFoodMultiple * prosperity / 50;
             explainedNumber.Add(num, _prosperityText);
 
-            return explainedNumber.ResultNumber;
+            return result + explainedNumber.ResultNumber;
         }
     }
 }
