@@ -276,7 +276,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="__abandoned\PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch.cs" />
+    <Compile Include="DeclareWar\PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch.cs" />
     <Compile Include="GameComponents\WangDefaultTroopSacrificeModel.cs" />
     <Compile Include="GameComponents\WangSettlementFoodModel.cs" />
     <Compile Include="GameComponents\WangSettlementProsperityModel.cs" />

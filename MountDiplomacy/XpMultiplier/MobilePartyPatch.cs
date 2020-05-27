@@ -27,7 +27,7 @@ namespace Wang
             {
                 foreach (CharacterObject troop in __instance.MemberRoster.Troops)
                 {
-                    int troopPerksXp = (int)Math.Pow(__instance.MemberRoster.GetTroopCount(troop), 0.5) * Campaign.Current.Models.PartyTrainingModel.GetPerkExperiencesForTroops(DefaultPerks.Leadership.CombatTips);
+                    int troopPerksXp = (int)Math.Pow(__instance.MemberRoster.GetTroopCount(troop), 0.5) * Campaign.Current.Models.PartyTrainingModel.GetTroopPerksXp(DefaultPerks.Leadership.CombatTips);
 
                     __instance.Party.MemberRoster.AddXpToTroop(troopPerksXp, troop);
                 }
@@ -41,7 +41,7 @@ namespace Wang
                         continue;
                     }
 
-                    int troopPerksXp2 = (int)Math.Pow(__instance.MemberRoster.GetTroopCount(item), 0.5) * Campaign.Current.Models.PartyTrainingModel.GetPerkExperiencesForTroops(DefaultPerks.Leadership.RaiseTheMeek);
+                    int troopPerksXp2 = (int)Math.Pow(__instance.MemberRoster.GetTroopCount(item), 0.5) * Campaign.Current.Models.PartyTrainingModel.GetTroopPerksXp(DefaultPerks.Leadership.RaiseTheMeek);
                     __instance.Party.MemberRoster.AddXpToTroop(troopPerksXp2, item);
                 }
             }

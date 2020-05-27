@@ -11,33 +11,33 @@ using Wang.Setting;
 namespace Wang
 {
 
-    [HarmonyPatch(typeof(KingdomDecisionProposalBehavior))]
-    public class KingdomDecisionProposalBehaviorPatch
-    {
-        [HarmonyPrefix]
-        [HarmonyPatch("GetRandomWarDecision")]
-        private static bool GetRandomWarDecision(Clan clan, ref KingdomDecision __result)
-        {
-            if (!DiplomacySetting.Instance.EnableSmartChoseFactionToDeclareWar)
-            {
-                return true;
-            }
+    //[HarmonyPatch(typeof(KingdomDecisionProposalBehavior))]
+    //public class KingdomDecisionProposalBehaviorPatch
+    //{
+    //    [HarmonyPrefix]
+    //    [HarmonyPatch("GetRandomWarDecision")]
+    //    private static bool GetRandomWarDecision(Clan clan, ref KingdomDecision __result)
+    //    {
+    //        if (!DiplomacySetting.Instance.EnableSmartChoseFactionToDeclareWar)
+    //        {
+    //            return true;
+    //        }
 
-            __result = null;
-            Kingdom kingdom = clan.Kingdom;
-            if (kingdom.UnresolvedDecisions.FirstOrDefault((KingdomDecision x) => x is DeclareWarDecision) != null)
-            {
-                return false;
-            }
-            IFaction DeclaredWarFaction = KingdomDecisionProposalBehaviorHelp.GetRandomPossibleDeclarWar(kingdom);
-            if (DeclaredWarFaction != null && KingdomDecisionProposalBehaviorHelp.ConsiderWar(clan, kingdom, DeclaredWarFaction))
-            {
-                //  InformationManager.DisplayMessage(new InformationMessage(kingdom.Name.ToString() + ":" + DeclaredWarFaction.Name.ToString()));
-                __result = new DeclareWarDecision(clan, DeclaredWarFaction);
-            }
-            return false;
-        }
-    }
+    //        __result = null;
+    //        Kingdom kingdom = clan.Kingdom;
+    //        if (kingdom.UnresolvedDecisions.FirstOrDefault((KingdomDecision x) => x is DeclareWarDecision) != null)
+    //        {
+    //            return false;
+    //        }
+    //        IFaction DeclaredWarFaction = KingdomDecisionProposalBehaviorHelp.GetRandomPossibleDeclarWar(kingdom);
+    //        if (DeclaredWarFaction != null && KingdomDecisionProposalBehaviorHelp.ConsiderWar(clan, kingdom, DeclaredWarFaction))
+    //        {
+    //            //  InformationManager.DisplayMessage(new InformationMessage(kingdom.Name.ToString() + ":" + DeclaredWarFaction.Name.ToString()));
+    //            __result = new DeclareWarDecision(clan, DeclaredWarFaction);
+    //        }
+    //        return false;
+    //    }
+    //}
 
 
     public class KingdomDecisionProposalBehaviorHelp
@@ -137,28 +137,28 @@ namespace Wang
         }
 
 
-        public static bool ConsiderWar(Clan clan, Kingdom kingdom, IFaction otherFaction)
-        {
-            int num = Campaign.Current.Models.DiplomacyModel.GetInfluenceCostOfProposingWar(kingdom) / 2;
-            if (clan.Influence < (float)num)
-            {
-                return false;
-            }
-            DeclareWarDecision declareWarDecision = new DeclareWarDecision(clan, otherFaction);
-            if (declareWarDecision.CalculateSupport(clan) > 50f)
-            {
-                float kingdomSupportForDecision = GetKingdomSupportForDecision(declareWarDecision);
-                if ((double)MBRandom.RandomFloat < (double)kingdomSupportForDecision - 0.55)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        //public static bool ConsiderWar(Clan clan, Kingdom kingdom, IFaction otherFaction)
+        //{
+        //    int num = Campaign.Current.Models.DiplomacyModel.GetInfluenceCostOfProposingWar(kingdom) / 2;
+        //    if (clan.Influence < (float)num)
+        //    {
+        //        return false;
+        //    }
+        //    DeclareWarDecision declareWarDecision = new DeclareWarDecision(clan, otherFaction);
+        //    if (declareWarDecision.CalculateSupport(clan) > 50f)
+        //    {
+        //        float kingdomSupportForDecision = GetKingdomSupportForDecision(declareWarDecision);
+        //        if ((double)MBRandom.RandomFloat < (double)kingdomSupportForDecision - 0.55)
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
-        private static float GetKingdomSupportForDecision(KingdomDecision decision)
-        {
-            return new KingdomElection(decision).GetLikelihoodForOutcome(0);
-        }
+        //private static float GetKingdomSupportForDecision(KingdomDecision decision)
+        //{
+        //    return new KingdomElection(decision).GetLikelihoodForOutcome(0);
+        //}
     }
 }

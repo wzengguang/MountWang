@@ -17,10 +17,10 @@ namespace Wang
     {
         [HarmonyPrefix]
         [HarmonyPatch("ConsiderWar")]
-        public static bool ConsiderWar(Clan clan, IFaction otherMapFaction)
+        public static bool ConsiderWar(IFaction mapFaction, IFaction otherMapFaction)
         {
 
-            if (!clan.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(clan, otherMapFaction, true, true))
+            if (!mapFaction.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(mapFaction, otherMapFaction, true, true))
             {
                 return false;
             }

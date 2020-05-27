@@ -1,4 +1,5 @@
-﻿using Helpers;
+﻿using HarmonyLib;
+using Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,38 +10,63 @@ using TaleWorlds.Core;
 
 namespace Wang
 {
-    //[HarmonyPatch(typeof(PoliticalStagnationAndBorderIncidentCampaignBehavior))]
+    [HarmonyPatch(typeof(PoliticalStagnationAndBorderIncidentCampaignBehavior))]
     public class PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch
     {
-        //  [HarmonyPrefix]
-        //  [HarmonyPatch("ThinkAboutDeclaringWar")]
+        [HarmonyPrefix]
+        [HarmonyPatch("ThinkAboutDeclaringWar")]
         private static bool ThinkAboutDeclaringWar(PoliticalStagnationAndBorderIncidentCampaignBehavior __instance, Kingdom kingdom)
         {
+            var atWars = Kingdom.All.Where(a => a != kingdom && a.IsAtWarWith(kingdom)).ToList();
+
+            if (atWars.Count > 1)
+            {
+                return false;
+            }
+
             List<IFaction> possibleKingdomsToDeclareWar = FactionHelper.GetPossibleKingdomsToDeclareWar(kingdom);
+
+
             var nears = Help.GetNearFactions(kingdom, Kingdom.All);
             var results = nears.Intersect(possibleKingdomsToDeclareWar).ToList();
             float num = 0f;
             IFaction faction = null;
+            List<IFaction> occupy = Help.CheckOwnSettlementOccupyedByFaction(kingdom);
             foreach (IFaction item in results)
             {
-                //var str = $"{results.Count()}:{kingdom.Name}:{item.Name}:{num / 500000}{Help.CanDeclareWar(kingdom, item)}";
-                //InformationManager.DisplayMessage(new InformationMessage(str));
+                var factor1 = 1f;
 
-                if (!Help.CanDeclareWar(kingdom, item, false, true))
+                var atWars2 = Kingdom.All.Where(a => a != item && a.IsAtWarWith(item)).Count();
+                if (occupy.Contains(item))
                 {
-                    continue;
+                    if (Help.AtTruce(kingdom, item))
+                    {
+                        if (atWars2 < 1)
+                        {
+                            continue;
+                        }
+                        if (atWars2 < 2 && MBRandom.RandomFloat < 0.5f)
+                        {
+                            continue;
+                        }
+                    }
+
+                    factor1 = 1.5f;
+                }
+                else
+                {
+                    if (Help.AtTruce(kingdom, item))
+                    {
+                        continue;
+                    }
                 }
 
-                float scoreOfDeclaringWar = Campaign.Current.Models.DiplomacyModel.GetScoreOfDeclaringWar(kingdom, item);
+                float scoreOfDeclaringWar = factor1 * Campaign.Current.Models.DiplomacyModel.GetScoreOfDeclaringWar(kingdom, item);
 
                 if (kingdom.Culture == item.Culture)
                 {
                     var factor = Math.Max(0.2f, 1 - Kingdom.All.Where(a => a.Settlements != null && a.Settlements.Where(t => t.IsTown).Count() > 3 && (a.Culture != kingdom.Culture || a.Ruler == Hero.MainHero)).Count() * 0.15f);
                     scoreOfDeclaringWar *= factor;
-                }
-                if (Help.CheckOwnSettlementOccupyedByFaction(item).Contains(item))
-                {
-                    scoreOfDeclaringWar *= 1.2f;
                 }
 
                 if (scoreOfDeclaringWar > num)
@@ -50,7 +76,7 @@ namespace Wang
                 }
             }
 
-            if (faction != null && MBRandom.RandomFloat < Math.Min(0.3f, num / 500000f))
+            if (faction != null && MBRandom.RandomFloat < Math.Min(0.3f, num / 400000f))
             {
                 DeclareWarAction.ApplyDeclareWarOverProvocation(kingdom, faction);
             }
