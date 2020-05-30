@@ -65,8 +65,8 @@ namespace Wang
 
                 if (kingdom.Culture == item.Culture)
                 {
-                    var factor = Math.Max(0.2f, 1 - Kingdom.All.Where(a => a.Settlements != null && a.Settlements.Where(t => t.IsTown).Count() > 3 && (a.Culture != kingdom.Culture || a.Ruler == Hero.MainHero)).Count() * 0.15f);
-                    scoreOfDeclaringWar *= factor;
+                    var factor = Math.Max(0.1f, 1 - Kingdom.All.Where(a => a.MapFaction != null && a.MapFaction.Settlements.Where(t => t.IsTown).Count() > 3 && (a.Culture != kingdom.Culture || a.Ruler == Hero.MainHero)).Count() * 0.15f);
+                    scoreOfDeclaringWar *= factor * 0.5f;
                 }
 
                 if (scoreOfDeclaringWar > num)
