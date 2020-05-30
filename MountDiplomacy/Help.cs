@@ -124,14 +124,14 @@ namespace Wang
 
 
 
-        public static double GetFactionWarDuration(IFaction faction, IFaction faction2)
-        {
-            CampaignWar campaignWar = (from war in Campaign.Current.FactionManager.FindCampaignWarsBetweenFactions(faction, faction2)?.ToList()
-                                       orderby war.StartDate - CampaignTime.Now descending
-                                       select war).FirstOrDefault();
-            double toDays = (CampaignTime.Now - campaignWar.StartDate).ToDays;
-            return toDays;
-        }
+        //public static double GetFactionWarDuration(IFaction faction, IFaction faction2)
+        //{
+        //    //CampaignWar campaignWar = (from war in Campaign.Current.FactionManager.FindCampaignWarsOfFaction(faction, faction2)?.ToList()
+        //    //                           orderby war.StartDate - CampaignTime.Now descending
+        //    //                           select war).FirstOrDefault();
+        //    //double toDays = (CampaignTime.Now - campaignWar.StartDate).ToDays;
+        //    //return toDays;
+        //}
         public static List<IFaction> GetNearFactions(IFaction kingdom, IEnumerable<IFaction> kingdoms, int take = 4)
         {
 
@@ -206,7 +206,6 @@ namespace Wang
             var atWars = Kingdom.All.Where(a => a != faction && a.IsAtWarWith(faction)).Count();
             var atWars2 = Kingdom.All.Where(a => a != faction2 && a.IsAtWarWith(faction2)).Count();
 
-            var days = FactionManager.GetDaysSinceTruceWithFaction(faction, faction2);
             if (atWars > 1 || atWars2 > 2 || (checkTruce && AtTruce(faction, faction2)))
             {
                 return false;
