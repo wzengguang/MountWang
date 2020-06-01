@@ -10,11 +10,11 @@ using TaleWorlds.Core;
 
 namespace Wang
 {
-    [HarmonyPatch(typeof(PoliticalStagnationAndBorderIncidentCampaignBehavior))]
+    //[HarmonyPatch(typeof(PoliticalStagnationAndBorderIncidentCampaignBehavior))]
     public class PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch
     {
-        [HarmonyPrefix]
-        [HarmonyPatch("ThinkAboutDeclaringWar")]
+        // [HarmonyPrefix]
+        // [HarmonyPatch("ThinkAboutDeclaringWar")]
         private static bool ThinkAboutDeclaringWar(PoliticalStagnationAndBorderIncidentCampaignBehavior __instance, Kingdom kingdom)
         {
             var atWars = Kingdom.All.Where(a => a != kingdom && a.IsAtWarWith(kingdom)).ToList();
