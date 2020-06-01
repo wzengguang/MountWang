@@ -49,7 +49,7 @@ namespace Vampire
         {
             if (Clan.PlayerClan.Companions != null)
             {
-                if (MBRandom.RandomFloat < 1f / Clan.PlayerClan.Companions.Count())
+                if (MBRandom.RandomFloat < 1f / Math.Max(1, Clan.PlayerClan.Companions.Count() / 10))
                 {
                     return true;
                 }

@@ -60,13 +60,32 @@ namespace Wang
                 return true;
             }
 
+
+
+            Func<EquipmentElement, ItemRosterElement, bool> func = delegate (EquipmentElement x, ItemRosterElement itemRosterElement)
+              {
+                  if (x.Item.StringId == itemRosterElement.EquipmentElement.Item.StringId)
+                  {
+                      ItemModifier itemModifier = x.ItemModifier;
+                      string a = (itemModifier != null) ? itemModifier.StringId : null;
+                      ItemModifier itemModifier2 = itemRosterElement.EquipmentElement.ItemModifier;
+                      return a == ((itemModifier2 != null) ? itemModifier2.StringId : null);
+                  }
+                  return false;
+              };
+
+
             List<EquipmentElement> list = Campaign.Current.GetCampaignBehavior<IInventoryLockTracker>().GetLocks().ToList();
 
             foreach (SPItemVM spitemVM in __instance.RightItemListVM)
             {
-                if (spitemVM.IsLocked && !list.Exists(a => a.Item.StringId == spitemVM.ItemRosterElement.EquipmentElement.Item.StringId))
+                if (spitemVM.IsLocked && !list.Exists(a => func(a, spitemVM.ItemRosterElement)))
                 {
                     list.Add(spitemVM.ItemRosterElement.EquipmentElement);
+                }
+                if (!spitemVM.IsLocked && list.Exists(a => func(a, spitemVM.ItemRosterElement)))
+                {
+                    list.RemoveAll(a => func(a, spitemVM.ItemRosterElement));
                 }
             }
             Campaign.Current.GetCampaignBehavior<IInventoryLockTracker>().SetLocks(list);
@@ -84,11 +103,24 @@ namespace Wang
                 return;
             }
 
+
+            Func<EquipmentElement, ItemRosterElement, bool> func = delegate (EquipmentElement x, ItemRosterElement itemRosterElement)
+            {
+                if (x.Item.StringId == itemRosterElement.EquipmentElement.Item.StringId)
+                {
+                    ItemModifier itemModifier = x.ItemModifier;
+                    string a = (itemModifier != null) ? itemModifier.StringId : null;
+                    ItemModifier itemModifier2 = itemRosterElement.EquipmentElement.ItemModifier;
+                    return a == ((itemModifier2 != null) ? itemModifier2.StringId : null);
+                }
+                return false;
+            };
+
             List<EquipmentElement> list = Campaign.Current.GetCampaignBehavior<IInventoryLockTracker>().GetLocks().ToList();
 
             foreach (SPItemVM spitemVM in __instance.RightItemListVM)
             {
-                if (list.Exists(a => a.Item.StringId == spitemVM.ItemRosterElement.EquipmentElement.Item.StringId))
+                if (list.Exists(a => func(a, spitemVM.ItemRosterElement)))
                 {
                     spitemVM.IsLocked = true;
                 }

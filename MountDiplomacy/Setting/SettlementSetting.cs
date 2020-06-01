@@ -1,4 +1,5 @@
-﻿using Wang.Setting.Attributes;
+﻿using TaleWorlds.SaveSystem;
+using Wang.Setting.Attributes;
 
 namespace Wang.Setting
 {
@@ -16,6 +17,10 @@ namespace Wang.Setting
 
         [SettingBoolean("{=setting_settlement_millitia_is_enabled}Enable Settlement Millitia Tweak", "{=setting_settlement_millitia_desc}Description: Reduce decommissioning rate. Increase the amout of prosperity. Change it need to restart game.", true)]
         public bool MillitiaIsEnabled { get; set; } = true;
+
+
+        [SettingNumeric("{=setting_settlement_millitia_retire_multiple}Settlement Millitia Retire Multiple", "{=setting_settlement_millitia_retire_multiple_desc}Description: Settlement Millitia Retire Multiple. Set 0 to disable this funtion. depend on [Enable Settlement Millitia Tweak]", 1f, 0f, 1f, false)]
+        public float MillitiaRetireMultiple { get; set; } = 1f;
 
         [SettingBoolean("{=setting_settlement_prosperity_is_enabled}Enable Settlement Prosperity Tweak", "{=setting_settlement_prosperity_desc}Description: When prosperity more than 10000, reduce increasing speed.  Change it need to restart game.", true)]
         public bool ProsperityEnabled { get; set; } = true;

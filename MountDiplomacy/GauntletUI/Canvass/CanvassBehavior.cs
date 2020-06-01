@@ -95,9 +95,10 @@ namespace Wang.GauntletUI.Canvass
         {
             var now = CharacterRelationManager.GetHeroRelation(Hero.MainHero, clan.Leader);
             var end = (now + relation) > 100 ? 100 : now + relation;
-            var cost = end * end * 10 - now * now * 10;
-            return cost;
 
+            var cost = (end < 0 ? -1 : 1) * end * end * 10 - (now < 0 ? -1 : 1) * now * now * 10;
+
+            return cost;
         }
 
         public static int GetExpectRelation(Hero hero, Clan clan, int daysToNow, bool hasFactor = true)

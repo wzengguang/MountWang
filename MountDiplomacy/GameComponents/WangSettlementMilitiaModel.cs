@@ -46,7 +46,7 @@ namespace Wang.GameComponents
                 {
                     explainedNumber.Add(1f, _baseText);
                 }
-                float value = (float)(-militia) * 0.023f;
+                float value = (float)(-militia) * 0.033f * SettlementSetting.Instance.MillitiaRetireMultiple;
                 explainedNumber.Add(value, _retiredText);
                 if (settlement.IsVillage)
                 {
