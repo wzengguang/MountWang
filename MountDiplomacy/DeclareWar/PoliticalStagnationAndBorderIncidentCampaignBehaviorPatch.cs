@@ -55,13 +55,18 @@ namespace Wang
                 }
                 else
                 {
+                    if (atWars2 > 2)
+                    {
+                        continue;
+                    }
                     if (Help.AtTruce(kingdom, item))
                     {
                         continue;
                     }
                 }
 
-                float scoreOfDeclaringWar = factor1 * Campaign.Current.Models.DiplomacyModel.GetScoreOfDeclaringWar(kingdom, item);
+                //float scoreOfDeclaringWar = factor1 * Campaign.Current.Models.DiplomacyModel.GetScoreOfDeclaringWar(kingdom, item);
+                float scoreOfDeclaringWar = factor1 * 1f;
 
                 if (kingdom.Culture == item.Culture)
                 {
@@ -76,7 +81,7 @@ namespace Wang
                 }
             }
 
-            if (faction != null && MBRandom.RandomFloat < Math.Min(0.3f, num / 400000f))
+            if (faction != null && MBRandom.RandomFloat < 0.2f)
             {
                 DeclareWarAction.ApplyDeclareWarOverProvocation(kingdom, faction);
             }
