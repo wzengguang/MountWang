@@ -67,10 +67,10 @@ namespace Wang
                 }
             }
 
-            var nears = Help.GetNearFactions(kingdom, Kingdom.All);
+            var nears = DiplomacySetting.GetNearFactionsWithFaction(kingdom, Kingdom.All);
             float num = 0f;
             IFaction faction = null;
-            List<IFaction> occupy = Help.CheckOwnSettlementOccupyedByFaction(kingdom);
+            List<IFaction> occupy = DiplomacySetting.GetAllFactionOccupyFactionSettlement(kingdom);
             foreach (IFaction item in nears)
             {
                 var atWars2 = Kingdom.All.Where(a => a != item && a.IsAtWarWith(item)).Count();
@@ -89,7 +89,7 @@ namespace Wang
 
                 if (occupy.Contains(item))
                 {
-                    if (Help.AtTruce(kingdom, item))
+                    if (DiplomacySetting.InTruce(kingdom, item))
                     {
                         if (atWars2 < 1)
                         {
@@ -105,7 +105,7 @@ namespace Wang
                 }
                 else
                 {
-                    if (Help.AtTruce(kingdom, item))
+                    if (DiplomacySetting.InTruce(kingdom, item))
                     {
                         continue;
                     }

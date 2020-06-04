@@ -276,6 +276,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeclareWar\MakePeaceActionPatch.cs" />
+    <Compile Include="DeclareWar\MakePeaceKingdomDecisionPatch.cs" />
     <Compile Include="DeclareWar\PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch.cs" />
     <Compile Include="GameComponents\WangDefaultTroopSacrificeModel.cs" />
     <Compile Include="GameComponents\WangSettlementFoodModel.cs" />
@@ -302,7 +304,9 @@
     <Compile Include="patchs\DefaultClanFinanceModelPatch.cs" />
     <Compile Include="patchs\EndCaptivityActionPatch.cs" />
     <Compile Include="patchs\PregnancyCampaignBehaviorPatch.cs" />
-    <Compile Include="__abandoned\WangSettlementGarrisonModel.cs" />
+    <Compile Include="Setting\UpgradeSetting.cs" />
+    <Compile Include="Setting\SettlementGarrisonSetting.cs" />
+    <Compile Include="GameComponents\WangSettlementGarrisonModel.cs" />
     <Compile Include="GameComponents\WangSettlementMilitiaModel.cs" />
     <Compile Include="Perks\AgentAndItemMenuVMPatch.cs" />
     <Compile Include="patchs\DefaultClanModelPatch.cs" />

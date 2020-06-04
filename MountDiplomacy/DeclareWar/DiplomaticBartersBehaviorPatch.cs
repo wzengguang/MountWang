@@ -20,7 +20,7 @@ namespace Wang
         public static bool ConsiderWar(Clan clan, IFaction otherMapFaction)
         {
 
-            if (!clan.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !Help.CanDeclareWar(clan, otherMapFaction, true, true))
+            if (!clan.IsKingdomFaction || !otherMapFaction.IsKingdomFaction || !DiplomacySetting.CanDeclareWar(clan, otherMapFaction, true, true))
             {
                 return false;
             }

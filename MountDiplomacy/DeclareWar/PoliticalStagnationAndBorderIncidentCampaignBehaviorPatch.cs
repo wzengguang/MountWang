@@ -7,6 +7,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.Core;
+using Wang.Setting;
 
 namespace Wang
 {
@@ -27,11 +28,11 @@ namespace Wang
             List<IFaction> possibleKingdomsToDeclareWar = FactionHelper.GetPossibleKingdomsToDeclareWar(kingdom);
 
 
-            var nears = Help.GetNearFactions(kingdom, Kingdom.All);
+            var nears = DiplomacySetting.GetNearFactionsWithFaction(kingdom, Kingdom.All);
             var results = nears.Intersect(possibleKingdomsToDeclareWar).ToList();
             float num = 0f;
             IFaction faction = null;
-            List<IFaction> occupy = Help.CheckOwnSettlementOccupyedByFaction(kingdom);
+            List<IFaction> occupy = DiplomacySetting.GetAllFactionOccupyFactionSettlement(kingdom);
             foreach (IFaction item in results)
             {
                 var factor1 = 1f;
@@ -39,7 +40,7 @@ namespace Wang
                 var atWars2 = Kingdom.All.Where(a => a != item && a.IsAtWarWith(item)).Count();
                 if (occupy.Contains(item))
                 {
-                    if (Help.AtTruce(kingdom, item))
+                    if (DiplomacySetting.InTruce(kingdom, item))
                     {
                         if (atWars2 < 1)
                         {
@@ -59,7 +60,7 @@ namespace Wang
                     {
                         continue;
                     }
-                    if (Help.AtTruce(kingdom, item))
+                    if (DiplomacySetting.InTruce(kingdom, item))
                     {
                         continue;
                     }

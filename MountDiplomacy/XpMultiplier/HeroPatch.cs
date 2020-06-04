@@ -19,14 +19,23 @@ namespace Wang
     {
         public static void Postfix(ref float __result, Hero hero, SkillObject skill, StatExplainer explainer = null)
         {
+            float plus = 1f;
+
+            var setting = XPGlobalSetting.Instance;
+
             if (hero == Hero.MainHero)
             {
-                __result *= XPGlobalSetting.Instance.PlayerXPMultiple;
+                plus += setting.PlayerXPMultiple;
             }
             else if (hero.Clan == Hero.MainHero.Clan)
             {
-                __result *= XPGlobalSetting.Instance.CompanionXPMultiple;
+                plus += setting.CompanionXPMultiple;
             }
+
+            plus += skill == DefaultSkills.Medicine ? setting.MedicineXPMultiple : 0;
+            plus += skill == DefaultSkills.Roguery ? setting.RogueryXPMultiple : 0;
+            plus += skill == DefaultSkills.Engineering ? setting.EngineeringXPMultiple : 0;
+            __result *= plus;
         }
     }
 

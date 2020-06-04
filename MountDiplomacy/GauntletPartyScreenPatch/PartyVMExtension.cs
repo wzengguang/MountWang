@@ -7,11 +7,22 @@ using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
+using TaleWorlds.GauntletUI;
+using Wang.Setting;
 
 namespace Wang
 {
+
+    public enum TroopOrderEnum
+    {
+        rideRangeInfantry
+    }
+
     public static class PartyVMExtension
     {
+
+        private static TroopOrderEnum TroopOrderEnum = TroopOrderEnum.rideRangeInfantry;
+
         public static void RefreshPartyScreen(this PartyVM partyVM)
         {
             Traverse.Create(partyVM).Method("RefreshTopInformation").GetValue();
@@ -32,13 +43,54 @@ namespace Wang
             return Traverse.Create(instance).Field<PartyScreenLogic>("_partyScreenLogic").Value;
         }
 
+        public static void OrderParty(this PartyVM partyVM)
+        {
+            PartyScreenLogic partyScreenLogic = GetPartyScreenLogic(partyVM);
+
+            var own = partyScreenLogic.MemberRosters[1];
+
+            List<TroopRosterElement> list = own.ToList();
+            List<FlattenedTroopRosterElement> elementList = CreateFlattenedRoster(own, partyVM);
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (!list[i].Character.IsHero)
+                {
+                    own.RemoveTroop(list[i].Character, list[i].Number);
+                }
+            }
+            own.Add(elementList);
+        }
+
+        public static List<FlattenedTroopRosterElement> CreateFlattenedRoster(TroopRoster roster, PartyVM partyVM)
+        {
+            IEnumerable<FlattenedTroopRosterElement> source = roster.ToFlattenedRoster().Where(a => !a.Troop.IsHero);
+            switch (TroopOrderEnum)
+            {
+                case TroopOrderEnum.rideRangeInfantry:
+                    source = source.OrderBy(a => a.Troop.IsMounted).ThenBy(a => a.Troop.IsArcher).ThenByDescending(a => a.Troop.Tier);
+
+                    break;
+            }
+
+            TroopOrderEnum = (TroopOrderEnum)(((int)TroopOrderEnum + 1) % 1);
+
+            return source.ToList();
+        }
+
+
+
+
+
+
+
         public static void ExecuteRecruitAll(this PartyVM partyVM)
         {
+
             PartyScreenLogic partyScreenLogic = GetPartyScreenLogic(partyVM);
             int num = partyScreenLogic.RightOwnerParty.PartySizeLimit - partyScreenLogic.MemberRosters[1].TotalManCount;
             int num2 = 0;
             int num3 = 0;
-            foreach (PartyCharacterVM item in partyVM.MainPartyPrisoners.OrderBy((PartyCharacterVM o) => o.Character.Tier).ToList())
+            foreach (PartyCharacterVM item in partyVM.MainPartyPrisoners.OrderByDescending((PartyCharacterVM o) => o.Character.Tier).ToList())
             {
                 if (num <= 0)
                 {
@@ -72,44 +124,63 @@ namespace Wang
             var hasTwoUpgrade = new List<PartyCharacterVM>();
 
             PartyScreenLogic partyScreenLogic = GetPartyScreenLogic(partyVM);
-            int num = 0;
-            int num2 = 0;
+            int troopNum = 0;
+            int troopNumTotal = 0;
 
             var party = partyVM.MainPartyTroops.OrderByDescending((PartyCharacterVM o) => o.Character.Tier).ToList();
-            foreach (PartyCharacterVM item in party)
+            foreach (PartyCharacterVM partyCharacterVM in party)
             {
-                if (!item.IsHero && item.IsUpgrade1Available && !item.IsUpgrade2Exists && item.NumOfTarget1UpgradesAvailable > 0 && !item.IsUpgrade1Insufficient)
+                if (!partyCharacterVM.IsHero && partyCharacterVM.IsUpgrade1Available && !partyCharacterVM.IsUpgrade2Exists && partyCharacterVM.NumOfTarget1UpgradesAvailable > 0 && !partyCharacterVM.IsUpgrade1Insufficient)
                 {
-                    int numOfTarget1UpgradesAvailable = item.NumOfTarget1UpgradesAvailable;
-                    num++;
-                    num2 += numOfTarget1UpgradesAvailable;
+                    int numOfTarget1UpgradesAvailable = partyCharacterVM.NumOfTarget1UpgradesAvailable;
+                    troopNum++;
+                    troopNumTotal += numOfTarget1UpgradesAvailable;
                     PartyScreenLogic.PartyCommand partyCommand = new PartyScreenLogic.PartyCommand();
-                    partyCommand.FillForUpgradeTroop(item.Side, item.Type, item.Character, numOfTarget1UpgradesAvailable, PartyScreenLogic.PartyCommand.UpgradeTargetType.UpgradeTarget1);
-                    partyVM.CurrentCharacter = item;
+                    partyCommand.FillForUpgradeTroop(partyCharacterVM.Side, partyCharacterVM.Type, partyCharacterVM.Character, numOfTarget1UpgradesAvailable, PartyScreenLogic.PartyCommand.UpgradeTargetType.UpgradeTarget1);
+                    partyVM.CurrentCharacter = partyCharacterVM;
                     ProcessCommand(partyScreenLogic, partyCommand);
                 }
 
-                if (!item.IsHero && item.IsUpgrade1Exists && item.IsUpgrade1Available && item.IsUpgrade2Exists && item.IsUpgrade2Available)
+                if (!partyCharacterVM.IsHero && partyCharacterVM.IsUpgrade1Exists && partyCharacterVM.IsUpgrade1Available && partyCharacterVM.IsUpgrade2Exists && partyCharacterVM.IsUpgrade2Available)
                 {
-                    hasTwoUpgrade.Add(item);
+                    hasTwoUpgrade.Add(partyCharacterVM);
                 }
             }
 
-            foreach (var item in hasTwoUpgrade)
+            foreach (var partyCharacterVM in hasTwoUpgrade)
             {
-                partyVM.MainPartyTroops.Remove(item);
-                partyVM.MainPartyTroops.Insert(1, item);
+
+
+                if (UpgradeSetting.Instance.IsEnabled && partyCharacterVM.IsUpgrade1Exists && partyCharacterVM.IsUpgrade2Exists && partyCharacterVM.IsUpgrade1Available && partyCharacterVM.IsUpgrade2Available && !partyCharacterVM.IsUpgrade1Insufficient && !partyCharacterVM.IsUpgrade2Insufficient)
+                {
+                    var upgradeSide = UpgradeSetting.Instance.FindUpgradeTopInSetting(partyCharacterVM.Character);
+                    if (upgradeSide > -1 && upgradeSide < 2)
+                    {
+                        var upgradeNum = upgradeSide == 0 ? partyCharacterVM.NumOfTarget1UpgradesAvailable : partyCharacterVM.NumOfTarget2UpgradesAvailable;
+                        troopNum++;
+                        troopNumTotal += upgradeNum;
+
+                        PartyScreenLogic.PartyCommand partyCommand = new PartyScreenLogic.PartyCommand();
+                        partyCommand.FillForUpgradeTroop(partyCharacterVM.Side, partyCharacterVM.Type, partyCharacterVM.Character, upgradeNum, (PartyScreenLogic.PartyCommand.UpgradeTargetType)upgradeSide);
+
+                        partyVM.CurrentCharacter = partyCharacterVM;
+                        ProcessCommand(partyScreenLogic, partyCommand);
+                        continue;
+                    }
+                }
+
+                partyVM.MainPartyTroops.Remove(partyCharacterVM);
+                partyVM.MainPartyTroops.Insert(1, partyCharacterVM);
             }
+
+
 
 
             RefreshPartyScreen(partyVM);
-            if (num > 0)
+            if (troopNum > 0)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"升级 {num2} 部队 ({num})"));
+                InformationManager.DisplayMessage(new InformationMessage($"升级 {troopNumTotal} 部队 ({troopNum})"));
             }
-
-
-
         }
     }
 }

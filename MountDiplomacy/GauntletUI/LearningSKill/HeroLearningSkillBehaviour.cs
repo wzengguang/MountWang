@@ -159,7 +159,7 @@ namespace Wang
                     var baseXp = 0.01f * (Campaign.Current.Models.CharacterDevelopmentModel.GetXpRequiredForSkillLevel(companionSkillValue)
                         - Campaign.Current.Models.CharacterDevelopmentModel.GetXpRequiredForSkillLevel(companionSkillValue - 1));
 
-                    var xp = XPGlobalSetting.Instance.LearningXPMultipier * baseXp * Math.Min(10, Math.Sqrt(max[learningSkill] - companionSkillValue));
+                    var xp = (1 + XPGlobalSetting.Instance.LearningXPMultipier) * baseXp * Math.Min(10, Math.Sqrt(max[learningSkill] - companionSkillValue));
 
                     xp /= (Math.Max(30, companionSkillValue) / 30);
 

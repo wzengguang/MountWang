@@ -20,41 +20,44 @@ namespace Wang.Perks
             {
                 return;
             }
-
+            ExplainedNumber explainedNumber = new ExplainedNumber(0f, explanation, null);
             if (party.LeaderHero.GetPerkValue(DefaultPerks.Riding.Squires))
             {
-                __result += 2;
+                explainedNumber.Add(DefaultPerks.Riding.Squires.PrimaryBonus, DefaultPerks.Riding.Squires.Name);
             }
             if (party.LeaderHero.GetPerkValue(DefaultPerks.Riding.Conroi))
             {
-                __result += 4;
+                explainedNumber.Add(DefaultPerks.Riding.Conroi.PrimaryBonus, DefaultPerks.Riding.Conroi.Name);
             }
 
             if (party.LeaderHero.GetPerkValue(DefaultPerks.Bow.MerryMen))
             {
-                __result += 3;
+                explainedNumber.Add(DefaultPerks.Bow.MerryMen.PrimaryBonus, DefaultPerks.Bow.MerryMen.Name);
             }
             if (party.LeaderHero.GetPerkValue(DefaultPerks.Throwing.Skirmishers))
             {
-                __result += 5;
+                explainedNumber.Add(DefaultPerks.Throwing.Skirmishers.PrimaryBonus, DefaultPerks.Throwing.Skirmishers.Name);
             }
             if (party.LeaderHero.GetPerkValue(DefaultPerks.Trade.Extra2))
             {
-                __result += 15;
+                explainedNumber.Add(DefaultPerks.Trade.Extra2.PrimaryBonus, DefaultPerks.Trade.Extra2.Name);
             }
 
             if (party.MapFaction.IsKingdomFaction && party.LeaderHero.IsFactionLeader && party.LeaderHero.GetPerkValue(DefaultPerks.Steward.SwordsAsTribute))
             {
-
-                __result += 10;
-
-
+                explainedNumber.Add(DefaultPerks.Steward.SwordsAsTribute.PrimaryBonus, DefaultPerks.Steward.SwordsAsTribute.Name);
             }
             //封地+5
             if (party.LeaderHero.GetPerkValue(DefaultPerks.Steward.ManAtArms) && party.LeaderHero.Clan.Settlements != null)
             {
-                __result += 5 * party.LeaderHero.Clan.Settlements.Where(a => a.IsTown || a.IsCastle).Count();
+                var add = 5 * party.LeaderHero.Clan.Settlements.Where(a => a.IsTown || a.IsCastle).Count();
+                if (add > 0)
+                {
+                    explainedNumber.Add(add, DefaultPerks.Steward.ManAtArms.Name);
+                }
             }
+
+            __result += (int)explainedNumber.ResultNumber;
         }
     }
 }

@@ -56,7 +56,6 @@ namespace Wang
                 ReplaceGameModel(campaignGameStarter);
                 AddBehaviour(gameStarterObject as CampaignGameStarter);
             }
-            Help.Original = null;
         }
 
         public override void OnGameLoaded(Game game, object initializerObject)
@@ -90,10 +89,10 @@ namespace Wang
                 {
                     list[i] = new WangSettlementMilitiaModel();
                 }
-                //if (list[i] is SettlementGarrisonModel)
-                //{
-                //    list[i] = new CustomSettlementGarrisonModel();
-                //}
+                if (list[i] is SettlementGarrisonModel)
+                {
+                    list[i] = new WangSettlementGarrisonModel();
+                }
 
                 if (SettlementSetting.Instance.ProsperityNeedFoodMultiple < 1 && list[i] is DefaultSettlementFoodModel)
                 {
@@ -166,7 +165,7 @@ namespace Wang
                     {
                         num++;
 
-                        var s = Help.CheckOwnSettlementOccupyedByFaction(item).Count();
+                        var s = DiplomacySetting.GetAllFactionOccupyFactionSettlement(item).Count;
 
                         text += $"{num}.{s} {item.Name}({Math.Round(item.MapFaction.TotalStrength)}) 战争于 ";
                         int num2 = 0;

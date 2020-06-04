@@ -18,6 +18,23 @@ namespace Wang
 
         private PartyVM _partyVM;
 
+
+        private string _orderText;
+
+        [DataSourceProperty]
+        public string OrderText
+        {
+            get { return _orderText; }
+            set
+            {
+                if (value != _orderText)
+                {
+                    _orderText = value;
+                    OnPropertyChanged(nameof(OrderText));
+                }
+            }
+        }
+
         private SelectorVM<OrderTroopSelectorItemVM> _orderTroop;
 
         [DataSourceProperty]
@@ -32,26 +49,27 @@ namespace Wang
                 if (value != _orderTroop)
                 {
                     _orderTroop = value;
-                    OnPropertyChanged("OrderTroop");
+                    OnPropertyChanged(nameof(OrderTroop));
                 }
             }
         }
 
         public AutoPartyManagerVM(PartyVM partyVM)
         {
+            OrderText = "order";
             _partyVM = partyVM;
             InitOrderTroop();
         }
 
         private void InitOrderTroop()
         {
-            OrderTroop = new SelectorVM<OrderTroopSelectorItemVM>(0, OnOrderTroopChange);
-            OrderTroop.SetOnChangeAction(null);
-            foreach (TroopSortType sort in (TroopSortType[])Enum.GetValues(typeof(TroopSortType)))
-            {
-                OrderTroop.AddItem(new OrderTroopSelectorItemVM(sort));
-            }
-            OrderTroop.SetOnChangeAction(OnOrderTroopChange);
+            //OrderTroop = new SelectorVM<OrderTroopSelectorItemVM>(0, OnOrderTroopChange);
+            //OrderTroop.SetOnChangeAction(null);
+            //foreach (TroopSortType sort in (TroopSortType[])Enum.GetValues(typeof(TroopSortType)))
+            //{
+            //    OrderTroop.AddItem(new OrderTroopSelectorItemVM(sort));
+            //}
+            //OrderTroop.SetOnChangeAction(OnOrderTroopChange);
         }
 
         private void OnOrderTroopChange(SelectorVM<OrderTroopSelectorItemVM> obj)
@@ -81,6 +99,52 @@ namespace Wang
             // InformationManager.DisplayMessage(new InformationMessage("ExecuteRecruitAll"));
             _partyVM.ExecuteRecruitAll();
 
+        }
+
+        public void OrderParty()
+        {
+            //  _partyVM.OrderParty();
+
+            //Func<CharacterObject, CharacterObject, bool> func = (a, b) =>
+            //{
+            //    return a.Tier > b.Tier;
+            //};
+
+            //PartyScreenLogic partyScreenLogic = _partyVM.GetPartyScreenLogic();
+
+            //List<PartyCharacterVM> partyCharacterVMs = new List<PartyCharacterVM>();
+
+            //var heroCount = 0;
+
+            //for (int i = 0; i < _partyVM.MainPartyTroops.Count; i++)
+            //{
+            //    var item = _partyVM.MainPartyTroops[i];
+            //    if (!item.IsHero)
+            //    {
+            //        var newIndex = 0;
+            //        for (int n = 0; n < partyCharacterVMs.Count; n++)
+            //        {
+            //            if (func.Invoke(item.Character, partyCharacterVMs[n].Character))
+            //            {
+            //                newIndex = n;
+            //            }
+            //        }
+            //        partyCharacterVMs.Insert(newIndex, item);
+            //    }
+            //    else
+            //    {
+            //        heroCount++;
+            //    }
+            //}
+
+            //for (int i = 0; i < partyCharacterVMs.Count; i++)
+            //{
+            //    var troop = partyCharacterVMs[i];
+
+            //    PartyScreenLogic.PartyCommand partyCommand = new PartyScreenLogic.PartyCommand();
+            //    partyCommand.FillForShiftTroop(troop.Side, troop.Type, troop.Character, i + heroCount);
+            //    partyScreenLogic.AddCommand(partyCommand);
+            //}
         }
 
         public void ExecuteUpgradeAll()

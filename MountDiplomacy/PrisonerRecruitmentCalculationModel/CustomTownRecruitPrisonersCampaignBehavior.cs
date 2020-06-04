@@ -18,12 +18,19 @@ namespace Wang
 
         public override void RegisterEvents()
         {
-            CampaignEvents.DailyTickTownEvent.AddNonSerializedListener(this, Recruit);
+            CampaignEvents.DailyTickSettlementEvent.AddNonSerializedListener(this, Recruit);
         }
 
-        public void Recruit(Town town)
+        public void Recruit(Settlement settlement)
         {
-            if ((!town.IsCastle && !town.IsTown) || town.Owner == null || town.Owner.PrisonRoster == null)
+            if (!settlement.IsTown && !settlement.IsCastle)
+            {
+                return;
+            }
+
+            var town = settlement.Town;
+
+            if (town.Owner == null || town.Owner.PrisonRoster == null)
             {
                 return;
             }

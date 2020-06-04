@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Messages.FromClient.ToLobbyServer;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,40 +204,47 @@ namespace Wang.Setting
                 if (topTroops == null)
                 {
 
-                    Func<CharacterObject, int> orderby = character =>
-                     {
-
-                         var culture = (int)character.Culture.GetCultureCode();
-                         if (culture < 0)
-                         {
-                             culture = 1000;
-                         }
-
-                         if (character.Culture.IsMainCulture)
-                         {
-                             return culture;
-                         }
-                         else if (character.Culture.IsBandit)
-                         {
-                             return 10 * culture;
-                         }
-                         else
-                         {
-                             return 100 * culture;
-                         }
-                     };
-
-                    topTroops = new Dictionary<string, TextObject>();
-                    foreach (var character in Find().OrderBy(orderby).ThenBy(a => a.DefaultFormationGroup))
-                    {
-                        topTroops.Add(character.StringId, character.Name);
-                    }
+                    topTroops = GetAllTopTroop();
                 }
                 return topTroops;
             }
         }
 
-        private HashSet<CharacterObject> Find()
+
+        public static Dictionary<string, TextObject> GetAllTopTroop()
+        {
+            Func<CharacterObject, int> orderby = character =>
+            {
+
+                var culture = (int)character.Culture.GetCultureCode();
+                if (culture < 0)
+                {
+                    culture = 1000;
+                }
+
+                if (character.Culture.IsMainCulture)
+                {
+                    return culture;
+                }
+                else if (character.Culture.IsBandit)
+                {
+                    return 10 * culture;
+                }
+                else
+                {
+                    return 100 * culture;
+                }
+            };
+
+            var topTroops = new Dictionary<string, TextObject>();
+            foreach (var character in FindAllTopTroop().OrderBy(orderby).ThenBy(a => a.DefaultFormationGroup))
+            {
+                topTroops.Add(character.StringId, character.Name);
+            }
+            return topTroops;
+        }
+
+        private static HashSet<CharacterObject> FindAllTopTroop()
         {
             HashSet<CharacterObject> characterObjects = new HashSet<CharacterObject>();
 
@@ -259,7 +267,7 @@ namespace Wang.Setting
         }
 
 
-        private bool IsTroop(CharacterObject character)
+        private static bool IsTroop(CharacterObject character)
         {
             return character != null && !character.IsTemplate && (character.Occupation == Occupation.Soldier || character.Occupation == Occupation.Mercenary || character.Occupation == Occupation.Bandit || character.Occupation == Occupation.Gangster || character.Occupation == Occupation.CaravanGuard);
         }
